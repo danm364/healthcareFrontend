@@ -1,0 +1,2 @@
+C:\Users\danm3\coding_projects\heatlcareProject\healthcareFrontend\obj\Debug\healthcarefrontend.esproj.SuggestedBindingRedirects.cache
+C:\Users\danm3\coding_projects\heatlcareProject\healthcareFrontend\obj\Debug\healthcarefrontend.esproj.CoreCompileInputs.cache
