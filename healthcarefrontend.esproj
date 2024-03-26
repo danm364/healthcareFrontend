@@ -12,7 +12,6 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\build</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="certification\" />
     <Folder Include="src\sass\partials\" />
   </ItemGroup>
   <ItemGroup>

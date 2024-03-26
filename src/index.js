@@ -9,27 +9,49 @@ import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage from './error-page';
 import { Auth0Provider } from '@auth0/auth0-react';
+import LandingPage from './components/landingpage/LandingPage';
+import axios from 'axios';
+import { redirect } from "react-router-dom";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
-        errorElement: <ErrorPage />
-    },
-    {
-        path: "/login",
-        element: <Login />,
         errorElement: <ErrorPage />,
-    },
-    {
-        path: "/Profile",
-        element: <Profile />,
-        errorElement: <ErrorPage />,
-    },
-    {
-        path: "/register",
-        element: <Register />,
-        errorElement: <ErrorPage />
+        action: async () => {
+            console.log("reached action")
+            return redirect("/home");
+        },
+        children: [
+            {
+                path: "login",
+                element: <Login />,
+                errorElement: <ErrorPage />
+            },
+            {
+                path: "",
+                element: <LandingPage />,
+                errorElement: <ErrorPage />
+            },
+
+            {
+                path: "profile",
+                element: <Profile />,
+                errorElement: <ErrorPage />,
+            },
+
+            {
+                path: "home",
+                element: <LandingPage />,
+                errorElement: <ErrorPage />
+            },
+
+            {
+                path: "register",
+                element: <Register />,
+                errorElement: <ErrorPage />
+            }
+        ]
     }
 ]);
 const root = ReactDOM.createRoot(document.getElementById('root'));
