@@ -5,6 +5,7 @@ import App from './App';
 import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
+import NavBar from './components/NavBar';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage from './error-page';
@@ -16,7 +17,7 @@ import { redirect } from "react-router-dom";
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: <NavBar />,
         errorElement: <ErrorPage />,
         action: async () => {
             console.log("reached action")
@@ -50,7 +51,7 @@ const router = createBrowserRouter([
                 path: "register",
                 element: <Register />,
                 errorElement: <ErrorPage />
-            }
+            }            
         ]
     }
 ]);
