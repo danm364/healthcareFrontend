@@ -2,33 +2,43 @@ import React, { Children } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
-import NavBar from './components/NavBar';
-import reportWebVitals from './reportWebVitals';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import ErrorPage from './error-page';
-import { Auth0Provider } from '@auth0/auth0-react';
 import LandingPage from './components/landingpage/LandingPage';
-import axios from 'axios';
-import { redirect } from "react-router-dom";
+import { loader } from "./components/Profile";
+import { accessToken } from "./components/AccessToken";
+import ErrorPage from './error-pages/error-page';
+import { Auth0Provider } from '@auth0/auth0-react';
+import { LoaderFunctionArgs } from "react-router-dom";
+import {
+    Form,
+    Link,
+    Outlet,
+    RouterProvider,
+    createBrowserRouter,
+    redirect,
+    useFetcher,
+    useLocation,
+    useRouteLoaderData,
+} from "react-router-dom";
+import { auth0AuthProvider } from "./auth";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <NavBar />,
+        element: <App />,
         errorElement: <ErrorPage />,
-        action: async () => {
-            console.log("reached action")
-            return redirect("/home");
-        },
+        loader: async function loader() {
+                    console.log("hello")
+                    let user = await auth0AuthProvider.username();
+                    let authenticated = await auth0AuthProvider.isAuthenticated();
+                    console.log(user)
+                    console.log(authenticated)
+                    // Our root route always provides the user, if logged in
+                    return { user };
+                },
         children: [
-            {
-                path: "login",
-                element: <Login />,
-                errorElement: <ErrorPage />
-            },
+
             {
                 path: "",
                 element: <LandingPage />,
@@ -39,6 +49,7 @@ const router = createBrowserRouter([
                 path: "profile",
                 element: <Profile />,
                 errorElement: <ErrorPage />,
+                loader: loader,
             },
 
             {
@@ -53,7 +64,33 @@ const router = createBrowserRouter([
                 errorElement: <ErrorPage />
             }            
         ]
-    }
+    },
+    //{
+    //    path: "/login-result",
+    //    loader: {
+    //        async loader() {
+    //            await auth0AuthProvider.handleSigninRedirect();
+    //            let isAuthenticated = await auth0AuthProvider.isAuthenticated();
+    //            if (isAuthenticated) {
+    //                let redirectTo =
+    //                    new URLSearchParams(window.location.search).get("redirectTo") || "/";
+    //                return redirect(redirectTo);
+    //            }
+    //            return redirect("/");
+    //        },
+    //        Component: () => null,
+    //    }
+    //},
+    //{
+    //    path: "/logout",
+    //    action: {
+    //        async action() {
+    //            // We signout in a "resource route" that we can hit from a fetcher.Form
+    //            await auth0AuthProvider.signout();
+    //            return redirect("/");
+    //        }
+    //    }
+    //},
 ]);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -73,4 +110,3 @@ root.render(
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
