@@ -2,23 +2,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { IconButton, Avatar, Box, Container, Grid } from '@mui/material';
 import React from "react";
 import { useLoaderData } from "react-router-dom";
-import axios from "axios";
-
-export const loader = async () => (
-    axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login/profileInfo`, "danm364@yahoo.com")
-        .then((response) => {
-            console.log(response)
-            return (response);
-        })
-        .catch((err) => {
-            console.log(err)
-            return err
-        })
-)
 
 export default function Profile() {
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
     const profileInfo = useLoaderData()
+
+    getAccessTokenSilently().then((returndata) => {
+        console.log(returndata)
+        return (returndata)
+    })
 
     if (isLoading) {
         return <div>Loading ...</div>;

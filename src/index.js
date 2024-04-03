@@ -5,7 +5,6 @@ import App from './App';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import LandingPage from './components/landingpage/LandingPage';
-import { loader } from "./components/Profile";
 import { accessToken } from "./components/AccessToken";
 import ErrorPage from './error-pages/error-page';
 import { Auth0Provider } from '@auth0/auth0-react';
@@ -22,21 +21,13 @@ import {
     useRouteLoaderData,
 } from "react-router-dom";
 import { auth0AuthProvider } from "./auth";
+import { ProfileLoader } from "./loaders/ProfileLoader";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         errorElement: <ErrorPage />,
-        loader: async function loader() {
-                    console.log("hello")
-                    let user = await auth0AuthProvider.username();
-                    let authenticated = await auth0AuthProvider.isAuthenticated();
-                    console.log(user)
-                    console.log(authenticated)
-                    // Our root route always provides the user, if logged in
-                    return { user };
-                },
         children: [
 
             {
@@ -48,8 +39,23 @@ const router = createBrowserRouter([
             {
                 path: "profile",
                 element: <Profile />,
-                errorElement: <ErrorPage />,
-                loader: loader,
+            errorElement: <ErrorPage />,
+            loader: async function loader() {
+                console.log("hello")
+                let user = await auth0AuthProvider.username();
+                let authenticated = await auth0AuthProvider.isAuthenticated();
+                if (authenticated && user) {
+                    let token = await auth0AuthProvider.getToken();
+                    console.log(token);
+
+                    let dbData = await ProfileLoader.loadProfileInfo(token);
+                    console.log(dbData)
+
+                }
+                console.log(authenticated)
+                // Our root route always provides the user, if logged in
+                return { user };
+            },
             },
 
             {
@@ -65,39 +71,41 @@ const router = createBrowserRouter([
             }            
         ]
     },
-    //{
-    //    path: "/login-result",
-    //    loader: {
-    //        async loader() {
-    //            await auth0AuthProvider.handleSigninRedirect();
-    //            let isAuthenticated = await auth0AuthProvider.isAuthenticated();
-    //            if (isAuthenticated) {
-    //                let redirectTo =
-    //                    new URLSearchParams(window.location.search).get("redirectTo") || "/";
-    //                return redirect(redirectTo);
-    //            }
-    //            return redirect("/");
-    //        },
-    //        Component: () => null,
-    //    }
-    //},
-    //{
-    //    path: "/logout",
-    //    action: {
-    //        async action() {
-    //            // We signout in a "resource route" that we can hit from a fetcher.Form
-    //            await auth0AuthProvider.signout();
-    //            return redirect("/");
-    //        }
-    //    }
-    //},
+    {
+        path: "/login-result",
+        loader: {
+            async loader() {
+                await auth0AuthProvider.handleSigninRedirect();
+                let isAuthenticated = await auth0AuthProvider.isAuthenticated();
+                if (isAuthenticated) {
+                    let redirectTo =
+                        new URLSearchParams(window.location.search).get("redirectTo") || "/";
+                    return redirect(redirectTo);
+                }
+                return redirect("/");
+            },
+            Component: () => null,
+        }
+    },
+    {
+        path: "/logout",
+        action: {
+            async action() {
+                // We signout in a "resource route" that we can hit from a fetcher.Form
+                await auth0AuthProvider.signout();
+                return redirect("/");
+            }
+        }
+    },
 ]);
+console.log(process.env.REACT_APP_AUTH_AUDIENCE)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <Auth0Provider
             domain="healthease.us.auth0.com"
             clientId="OJEAiU4DNGAh06kPtZnsq90T36O9AIy6"
+            audience="process.env.REACT_APP_AUTH_AUDIENCE"
             authorizationParams={{
                 redirect_uri: "http://127.0.0.1:3000/"
             }}
