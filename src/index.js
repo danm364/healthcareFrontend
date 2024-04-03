@@ -23,11 +23,18 @@ import {
 import { auth0AuthProvider } from "./auth";
 import { ProfileLoader } from "./loaders/ProfileLoader";
 
+
+//const auth = auth0AuthProvider.getUser();
+
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         errorElement: <ErrorPage />,
+        loader: async function loader() {
+            let authenticated = await auth0AuthProvider.isAuthenticated();
+                    return authenticated
+        },
         children: [
 
             {
@@ -102,16 +109,7 @@ console.log(process.env.REACT_APP_AUTH_AUDIENCE)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <Auth0Provider
-            domain="healthease.us.auth0.com"
-            clientId="OJEAiU4DNGAh06kPtZnsq90T36O9AIy6"
-            audience="process.env.REACT_APP_AUTH_AUDIENCE"
-            authorizationParams={{
-                redirect_uri: "http://127.0.0.1:3000/"
-            }}
-        >
             <RouterProvider router={router} />
-        </Auth0Provider>
     </React.StrictMode>
 );
 

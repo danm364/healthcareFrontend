@@ -7,7 +7,6 @@ const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH_CLIENT_ID;
 const AUTH0_AUDIENCE = process.env.REACT_APP_AUTH_AUDIENCE;
 
 let auth0ClientPromise;
-
 function getClient() {
     if (!auth0ClientPromise) {
         auth0ClientPromise = createAuth0Client({
@@ -18,11 +17,11 @@ function getClient() {
     }
     return auth0ClientPromise;
 }
+auth0ClientPromise = await getClient();
 
 export const auth0AuthProvider = {
     async isAuthenticated() {
         let client = await getClient();
-        console.log(client)
         return client.isAuthenticated();
     },
     async username() {
@@ -40,6 +39,10 @@ export const auth0AuthProvider = {
         return token
     },
 
+    async getUser() {
+        let client = await getClient();
+        return client.getUser();
+    },
 
     async signin() {
         let client = await getClient();
@@ -58,6 +61,10 @@ export const auth0AuthProvider = {
     },
     async signout() {
         let client = await getClient();
-        await client.logout();
+        await client.logout({
+            logoutParams: {
+                returnTo: 'http://localhost:3000/'
+            }
+        });
     },
 };

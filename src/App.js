@@ -2,12 +2,18 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Outlet } from "react-router-dom";
+import { auth0AuthProvider } from "./auth";
+import { useLoaderData } from "react-router-dom";
+
 
 export default function App() {
-    const { logout } = useAuth0();
-    const { isAuthenticated, loginWithRedirect } = useAuth0();
+    let isAuthenticated = useLoaderData();
+
+    console.log(isAuthenticated)
+    let loginWithRedirect = auth0AuthProvider.signin;
+    let logout = auth0AuthProvider.signout;
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -57,10 +63,10 @@ export default function App() {
                     </Typography>
 
                     {!isAuthenticated && (
-                        <Button color="inherit" onClick={() => loginWithRedirect()}>Log in</Button>
+                        <Button color="inherit" onClick={async () => await loginWithRedirect()}>Log in</Button>
                     )}
                     {isAuthenticated && (
-                        <Button color="inherit" onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>logout</Button>
+                        <Button color="inherit" onClick={async () => await logout()}>logout</Button>
                     )}
                 </Toolbar>
             </AppBar>
