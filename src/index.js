@@ -7,7 +7,6 @@ import Profile from './components/Profile';
 import LandingPage from './components/landingpage/LandingPage';
 import { accessToken } from "./components/AccessToken";
 import ErrorPage from './error-pages/error-page';
-import { Auth0Provider } from '@auth0/auth0-react';
 import { LoaderFunctionArgs } from "react-router-dom";
 import {
     Form,
@@ -20,25 +19,35 @@ import {
     useLocation,
     useRouteLoaderData,
 } from "react-router-dom";
-import { auth0AuthProvider } from "./auth";
 import { ProfileLoader } from "./loaders/ProfileLoader";
+import { createAuth0Client } from '@auth0/auth0-spa-js';
 
-
-//const auth = auth0AuthProvider.getUser();
-
+const AUTH0_DOMAIN = process.env.REACT_APP_AUTH_DOMAIN;
+const AUTH0_CLIENT_ID = process.env.REACT_APP_AUTH_CLIENT_ID;
+const AUTH0_AUDIENCE = process.env.REACT_APP_AUTH_AUDIENCE;
+const auth0 = await createAuth0Client({
+    domain: AUTH0_DOMAIN,
+    clientId: AUTH0_CLIENT_ID,
+    audience: AUTH0_AUDIENCE
+});
 const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         errorElement: <ErrorPage />,
         loader: async function loader() {
-            let authenticated = await auth0AuthProvider.isAuthenticated();
-                    return authenticated
+
+            console.log(auth0)
+
+            let isAuthenticated = await auth0.isAuthenticated();
+            console.log(isAuthenticated)
+            //let isAuthenticated = await auth0.isAuthenticated();
+            return [auth0, isAuthenticated]
         },
         children: [
 
             {
-                path: "",
+                path: "/",
                 element: <LandingPage />,
                 errorElement: <ErrorPage />
             },
@@ -49,10 +58,10 @@ const router = createBrowserRouter([
             errorElement: <ErrorPage />,
             loader: async function loader() {
                 console.log("hello")
-                let user = await auth0AuthProvider.username();
-                let authenticated = await auth0AuthProvider.isAuthenticated();
+                let user = await auth0.getUser();
+                let authenticated = await auth0.isAuthenticated();
                 if (authenticated && user) {
-                    let token = await auth0AuthProvider.getToken();
+                    let token = await auth0.getTokenSilently();
                     console.log(token);
 
                     let dbData = await ProfileLoader.loadProfileInfo(token);
@@ -61,7 +70,7 @@ const router = createBrowserRouter([
                 }
                 console.log(authenticated)
                 // Our root route always provides the user, if logged in
-                return { user };
+                return { user: user, isAuthenticated: authenticated };
             },
             },
 
@@ -78,32 +87,32 @@ const router = createBrowserRouter([
             }            
         ]
     },
-    {
-        path: "/login-result",
-        loader: {
-            async loader() {
-                await auth0AuthProvider.handleSigninRedirect();
-                let isAuthenticated = await auth0AuthProvider.isAuthenticated();
-                if (isAuthenticated) {
-                    let redirectTo =
-                        new URLSearchParams(window.location.search).get("redirectTo") || "/";
-                    return redirect(redirectTo);
-                }
-                return redirect("/");
-            },
-            Component: () => null,
-        }
-    },
-    {
-        path: "/logout",
-        action: {
-            async action() {
-                // We signout in a "resource route" that we can hit from a fetcher.Form
-                await auth0AuthProvider.signout();
-                return redirect("/");
-            }
-        }
-    },
+    //{
+    //    path: "/login-result",
+    //    loader: {
+    //        async loader() {
+    //            await auth0AuthProvider.handleSigninRedirect();
+    //            let isAuthenticated = await auth0AuthProvider.isAuthenticated();
+    //            if (isAuthenticated) {
+    //                let redirectTo =
+    //                    new URLSearchParams(window.location.search).get("redirectTo") || "/";
+    //                return redirect(redirectTo);
+    //            }
+    //            return redirect("/");
+    //        },
+    //        Component: () => null,
+    //    }
+    //},
+    //{
+    //    path: "/logout",
+    //    action: {
+    //        async action() {
+    //            // We signout in a "resource route" that we can hit from a fetcher.Form
+    //            await auth0AuthProvider.signout();
+    //            return redirect("/");
+    //        }
+    //    }
+    //},
 ]);
 console.log(process.env.REACT_APP_AUTH_AUDIENCE)
 const root = ReactDOM.createRoot(document.getElementById('root'));

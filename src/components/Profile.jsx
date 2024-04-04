@@ -1,13 +1,13 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { IconButton, Avatar, Box, Container, Grid } from '@mui/material';
 import React from "react";
-import { auth0AuthProvider } from "../auth";
-
+import { useLoaderData } from "react-router-dom";
 
 export default function Profile() {
 
-    let user = async () => await auth0AuthProvider.getUser();
-    let isAuthenticated = async () => await auth0AuthProvider.isAuthenticated();
+    let user = useLoaderData().user;
+    let isAuthenticated = useLoaderData().isAuthenticated;
+    console.log(isAuthenticated)
     //if (isLoading) {
     //    return <div>Loading ...</div>;
     //}

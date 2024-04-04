@@ -3,17 +3,14 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from 
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { auth0AuthProvider } from "./auth";
 import { useLoaderData } from "react-router-dom";
 
 
 export default function App() {
-    let isAuthenticated = useLoaderData();
-
+    let auth0 = useLoaderData()[0];
+    console.log(auth0)
+    let isAuthenticated = useLoaderData()[1]
     console.log(isAuthenticated)
-    let loginWithRedirect = auth0AuthProvider.signin;
-    let logout = auth0AuthProvider.signout;
-
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
@@ -62,12 +59,12 @@ export default function App() {
                         My Website
                     </Typography>
 
-                    {!isAuthenticated && (
-                        <Button color="inherit" onClick={async () => await loginWithRedirect()}>Log in</Button>
-                    )}
-                    {isAuthenticated && (
-                        <Button color="inherit" onClick={async () => await logout()}>logout</Button>
-                    )}
+                    {/*{!isAuthenticated && (*/}
+                        <Button color="inherit" onClick={async () => await auth0.loginWithRedirect({ authorizationParams: { redirect_uri: 'http://localhost:3000/' } })}>Log in</Button>
+                    {/*)}*/}
+                    {/*{isAuthenticated && (*/}
+                        <Button color="inherit" onClick={async () => await auth0.logout({ logutParams: { returnTo: 'http://127.0.0.1:3000/' }})}>logout</Button>
+                    {/*)}*/}
                 </Toolbar>
             </AppBar>
             <Outlet />
