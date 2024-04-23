@@ -1,18 +1,15 @@
 import axios from "axios";
 
 export const ProfileLoader = {
-    async loadProfileInfo(token)
-    {
-        console.log(token)
-        let username = 'danm364@yahoo.com'
-        let data =  await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login/profileInfo`,
+    async loadProfileInfo(token) {
+        let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login/userCheck`,
             {
                 username
             }
             ,
             {
-            withCredentials: true,
-            headers:
+                withCredentials: true,
+                headers:
                 {
                     Authorization: `Bearer ${token}`,
                 },
@@ -27,7 +24,7 @@ export const ProfileLoader = {
                 return err
             })
 
-            return data
+        return data
     }
 
 }

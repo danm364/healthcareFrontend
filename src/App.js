@@ -1,73 +1,82 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
-import { useLoaderData } from "react-router-dom";
+import './index.css';
+import Register from './components/Register';
+import Profile from './components/Profile';
+import LandingPage from './components/landingpage/LandingPage';
+import ErrorPage from './error-pages/error-page';
+import {
+    RouterProvider,
+    createBrowserRouter,
+} from "react-router-dom";
+import { ProfileLoader } from "./loaders/ProfileLoader";
+import { useAuth0 } from '@auth0/auth0-react';
+import NavBar from "./NavBar"
 
 
-export default function App() {
-    let auth0 = useLoaderData()[0];
-    console.log(auth0)
-    let isAuthenticated = useLoaderData()[1]
-    console.log(isAuthenticated)
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
+export const App = () => {
+    const auth0 = useAuth0();
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+    const router = React.useMemo(() => { // <-- memoize router reference
+        return createBrowserRouter([
+            {
+                path: "/",
+                element: <NavBar />,
+                errorElement: <ErrorPage />,
+                loader: async function loader() {
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+                    let isAuthenticated = auth0.isAuthenticated
+                    //let isAuthenticated = await auth0.isAuthenticated();
+                    return auth0
+                },
+                children: [
 
-    return (
-        <div>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                        onClick={handleClick}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                        }}
-                    >
-                        <MenuItem onClick={handleClose}>
-                            <Link to="/home">Home</Link>
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>
-                            <Link to="/profile">Profile</Link>
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>
-                            <Link to="/about">About</Link>
-                        </MenuItem>
-                    </Menu>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        My Website
-                    </Typography>
+                    {
+                        path: "/",
+                        element: <LandingPage />,
+                        errorElement: <ErrorPage />
+                    },
 
-                    {/*{!isAuthenticated && (*/}
-                        <Button color="inherit" onClick={async () => await auth0.loginWithRedirect({ authorizationParams: { redirect_uri: 'http://localhost:3000/' } })}>Log in</Button>
-                    {/*)}*/}
-                    {/*{isAuthenticated && (*/}
-                        <Button color="inherit" onClick={async () => await auth0.logout({ logutParams: { returnTo: 'http://127.0.0.1:3000/' }})}>logout</Button>
-                    {/*)}*/}
-                </Toolbar>
-            </AppBar>
-            <Outlet />
-        </div>
-    );
-}
+                    {
+                        path: "profile",
+                        element: <Profile />,
+                        errorElement: <ErrorPage />,
+                        loader: async function loader() {
+                            console.log("hello")
+                            let user = await auth0.user;
+                            let authenticated = auth0.isAuthenticated;
+                            if (authenticated && user) {
+                                let token = await auth0.getAccessTokenSilently({"domain" : `${process.env.REACT_APP_AUTH_DOMAIN }`,
+                                    "clientId" : `${process.env.REACT_APP_AUTH_CLIENT_ID }`,
+                                    "audience" : `${ process.env.REACT_APP_AUTH_AUDIENCE }`
+                                });
+                                console.log(token);
+
+
+                                let dbData = await ProfileLoader.loadProfileInfo(token);
+                                console.log(dbData)
+                            }
+                            console.log(authenticated)
+                            // Our root route always provides the user, if logged in
+                            return { user: user, isAuthenticated: authenticated };
+                        },
+                    },
+
+                    {
+                        path: "home",
+                        element: <LandingPage />,
+                        errorElement: <ErrorPage />
+                    },
+
+                    {
+                        path: "register",
+                        element: <Register />,
+                        errorElement: <ErrorPage />
+                    }
+                ]
+            },
+        ]);
+    }, [auth0]); // <-- auth0 external dependency
+
+    return <RouterProvider router={router} />;
+};
+
