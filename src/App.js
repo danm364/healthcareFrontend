@@ -41,21 +41,12 @@ export const App = () => {
                         element: <Profile />,
                         errorElement: <ErrorPage />,
                         loader: async function loader() {
-                            console.log("hello")
                             let user = await auth0.user;
                             let authenticated = auth0.isAuthenticated;
                             if (authenticated && user) {
-                                let token = await auth0.getAccessTokenSilently({"domain" : `${process.env.REACT_APP_AUTH_DOMAIN }`,
-                                    "clientId" : `${process.env.REACT_APP_AUTH_CLIENT_ID }`,
-                                    "audience" : `${ process.env.REACT_APP_AUTH_AUDIENCE }`
-                                });
-                                console.log(token);
-
-
+                                let token = await auth0.getAccessTokenSilently();
                                 let dbData = await ProfileLoader.loadProfileInfo(token);
-                                console.log(dbData)
                             }
-                            console.log(authenticated)
                             // Our root route always provides the user, if logged in
                             return { user: user, isAuthenticated: authenticated };
                         },

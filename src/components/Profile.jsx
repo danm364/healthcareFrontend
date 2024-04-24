@@ -7,19 +7,18 @@ export default function Profile() {
 
     let user = useLoaderData().user;
     let isAuthenticated = useLoaderData().isAuthenticated;
-    console.log(isAuthenticated)
     //if (isLoading) {
     //    return <div>Loading ...</div>;
     //}
 
     return (
         isAuthenticated && (
-            <Container>
-                <Grid container rowspacing={1} columnSpacing={{ xs: 12, sm: 12, md: 12 }} justifyContent={ "center" } spacing>
-                    <Grid container rowspacing={1} columnSpacing={{ xl: 1 }} justifyContent={"center"}>
+            <Container maxwidth="sm">
+                <Grid>
+                    <Grid>
                         <Avatar alt={user.name} src={user.picture} />
                     </Grid>
-                    <Grid container rowspacing={1} columnSpacing={{ xl: 1 }} justifyContent={"center"}>
+                    <Grid >
                         <Grid>
                             <h2>{user.name}</h2>
                         </Grid>

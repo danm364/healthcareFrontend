@@ -22,7 +22,7 @@ root.render(
             audience={process.env.REACT_APP_AUTH_AUDIENCE}
             authorizationParams={{
                 audience: `${process.env.REACT_APP_AUTH_AUDIENCE}`,
-                redirect_uri: "http://localhost:3000/",
+                redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}`,
                 scope: "openid+profile+email"
             }}
         >
