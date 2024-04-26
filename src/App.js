@@ -41,6 +41,7 @@ export const App = () => {
                         element: <Profile />,
                         errorElement: <ErrorPage />,
                         loader: async function loader() {
+                            console.log(auth0)
                             let user = await auth0.user;
                             let authenticated = auth0.isAuthenticated;
                             if (authenticated && user) {
