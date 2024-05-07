@@ -11,10 +11,22 @@ import {
 import { ProfileLoader } from "./loaders/ProfileLoader";
 import { useAuth0 } from '@auth0/auth0-react';
 import NavBar from "./NavBar"
-
+import { deepmerge } from '@mui/utils';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export const App = () => {
     const auth0 = useAuth0();
+
+    const theme = createTheme({
+        breakpoints: {
+            values: {
+                mobile: 400,
+                tablet: 640,
+                laptop: 1024,
+                desktop: 1200,
+            },
+        },
+    });
 
     const router = React.useMemo(() => { // <-- memoize router reference
         return createBrowserRouter([
@@ -69,6 +81,6 @@ export const App = () => {
         ]);
     }, [auth0]); // <-- auth0 external dependency
 
-    return <RouterProvider router={router} />;
+    return <ThemeProvider theme={theme }><RouterProvider router={router} /></ThemeProvider>;
 };
 
