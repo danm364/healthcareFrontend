@@ -38,7 +38,6 @@ export const App = () => {
                 loader: async function loader() {
 
                     let isAuthenticated = auth0.isAuthenticated
-                    //let isAuthenticated = await auth0.isAuthenticated();
                     return auth0
                 },
                 children: [
@@ -65,15 +64,7 @@ export const App = () => {
                             return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo};
                         },
                         action: async function action({ params, request }) {
-                            let user = await auth0.user;
-                            let authenticated = auth0.isAuthenticated;
-
-                            if (authenticated && user) {
-                                let token = await auth0.getAccessTokenSilently();
-                                await ProfileAction.updateProfileInfo(request, token)
-
-                            }
-
+                            await ProfileAction.updateProfileInfo(request, auth0)
 
                             return null
                         }
