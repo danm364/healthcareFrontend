@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { sizing, spacing } from '@mui/system'
 import React from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, Form } from "react-router-dom";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckIcon from '@mui/icons-material/Check';
 import MessageIcon from '@mui/icons-material/Message';
@@ -26,7 +26,7 @@ export default function Profile() {
     let token = auth0.getAccessTokenSilently()
     const [disabledTextBox, toggleDisabledTextBox] = useState(true)
 
-    let user = useLoaderData().user;
+    let user = useLoaderData()?.profileInfo?.data;
     let isAuthenticated = useLoaderData().isAuthenticated;
     //if (isLoading) {
     //    return <div>Loading ...</div>;
@@ -104,25 +104,27 @@ export default function Profile() {
                             </List>
                         </Box>
                         <Box sx={{display:"flex", flexDirection: "column"} }>
-                            <Typography variant="h1" sx={{fontSize: 12} }>Personal Information</Typography>
-                            <FormControl>
-                                <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: 1 }} component="form" onSubmit={(e) => profileFormUpdate(e) } >
-                                    <Divider />
-                                    <Box sx={{ display: "flex", flexDirection: "row", width: "100%" , justifyContent: "space-between" }}>
-                                        <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox } >FirstName</TextField>
-                                        <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox }>LastName</TextField>
+                            <Typography variant="h1" sx={{ fontSize: 12 }}>Personal Information</Typography>
+                            <Form method="post" action="/profile">
+                                <FormControl>
+                                    <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: 1 }}>
+                                        <Divider />
+                                        <Box sx={{ display: "flex", flexDirection: "row", width: "100%" , justifyContent: "space-between" }}>
+                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="firstName" value={ user.firstName } >FirstName</TextField>
+                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="lastName" value={ user.lastName }>LastName</TextField>
+                                        </Box>
+                                        <Box sx={{ display: "flex", flexDirection: "row", width: "100%" ,justifyContent: "space-between" }}>
+                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox} name="address" value={ user.address }>Address 1</TextField>
+                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox} name="apartmentNumber" value={ user.apartmentNumber }>Apt #</TextField>
+                                        </Box>
+                                        <TextField size="small" label="E-mail" disabled={disabledTextBox} value={ user.email } name="email">E-mail</TextField>
+                                        <ButtonGroup variant="contained" aria-label="Basic button group" sx={{ width: "30%", minWidth: "137px" }} >
+                                            <Button sx={{ width: "50%"}} onClick={(e) => { toggleEdit(e) } }>Edit</Button>
+                                            <Button sx={{ width: "50%"}} type="submit" name="profileSubmitS">Submit</Button>
+                                        </ButtonGroup>
                                     </Box>
-                                    <Box sx={{ display: "flex", flexDirection: "row", width: "100%" ,justifyContent: "space-between" }}>
-                                        <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox}>Address 1</TextField>
-                                        <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox}>Apt #</TextField>
-                                    </Box>
-                                    <TextField size="small" label="E-mail" disabled={disabledTextBox}>E-mail</TextField>
-                                    <ButtonGroup variant="contained" aria-label="Basic button group" sx={{ width: "30%", minWidth: "137px" }} >
-                                        <Button sx={{ width: "50%"}} onClick={(e) => { toggleEdit(e) } }>Edit</Button>
-                                        <Button sx={{ width: "50%"}}>Submit</Button>
-                                    </ButtonGroup>
-                                </Box>
-                            </FormControl>
+                                </FormControl>
+                            </Form>
                         </Box>
                     </Grid>
                 </Grid>

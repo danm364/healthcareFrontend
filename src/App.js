@@ -9,6 +9,7 @@ import {
     createBrowserRouter,
 } from "react-router-dom";
 import { ProfileLoader } from "./loaders/ProfileLoader";
+import { ProfileAction } from "./actions/ProfileAction";
 import { useAuth0 } from '@auth0/auth0-react';
 import NavBar from "./NavBar"
 import { deepmerge } from '@mui/utils';
@@ -53,16 +54,29 @@ export const App = () => {
                         element: <Profile />,
                         errorElement: <ErrorPage />,
                         loader: async function loader() {
-                            console.log(auth0)
                             let user = await auth0.user;
                             let authenticated = auth0.isAuthenticated;
+                            let profileInfo;
                             if (authenticated && user) {
                                 let token = await auth0.getAccessTokenSilently();
-                                let dbData = await ProfileLoader.loadProfileInfo(token);
+                                profileInfo = await ProfileLoader.loadProfileInfo(token);
                             }
                             // Our root route always provides the user, if logged in
-                            return { user: user, isAuthenticated: authenticated };
+                            return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo};
                         },
+                        action: async function action({ params, request }) {
+                            let user = await auth0.user;
+                            let authenticated = auth0.isAuthenticated;
+
+                            if (authenticated && user) {
+                                let token = await auth0.getAccessTokenSilently();
+                                await ProfileAction.updateProfileInfo(request, token)
+
+                            }
+
+
+                            return null
+                        }
                     },
 
                     {

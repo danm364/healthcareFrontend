@@ -9,7 +9,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 export default function NavBar() {
     let auth0 = useLoaderData();
 
-    let isAuthenticated = auth0.isAuthenticated;
+    let isAuthenticated = auth0?.isAuthenticated;
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
 
