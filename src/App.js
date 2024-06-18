@@ -7,6 +7,7 @@ import ErrorPage from './error-pages/error-page';
 import {
     RouterProvider,
     createBrowserRouter,
+    redirect
 } from "react-router-dom";
 import { ProfileLoader } from "./loaders/ProfileLoader";
 import { ProfileAction } from "./actions/ProfileAction";
@@ -21,7 +22,7 @@ export const App = () => {
     const theme = createTheme({
         breakpoints: {
             values: {
-                mobile: 400,
+                mobile: 430,
                 tablet: 640,
                 laptop: 1024,
                 desktop: 1200,
@@ -63,10 +64,9 @@ export const App = () => {
                             // Our root route always provides the user, if logged in
                             return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo};
                         },
-                        action: async function action({ params, request }) {
+                        action: async function action({request }) {
                             await ProfileAction.updateProfileInfo(request, auth0)
-
-                            return null
+                            return redirect("/profile")
                         }
                     },
 

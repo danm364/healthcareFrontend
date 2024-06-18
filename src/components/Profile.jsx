@@ -40,22 +40,6 @@ export default function Profile() {
         toggleDisabledTextBox(!disabledTextBox)
     }
 
-    function profileFormUpdate(e) {
-        console.log(e)
-            let data = axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login/profileInfo`,
-                {
-                }
-                ,
-                {
-                    withCredentials: true,
-                    headers:
-                    {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-    }
-
     return (
         isAuthenticated && (
             <Container maxwidth="sm" sx={{ height: 800, mt: 5, display:"flex"}} >
@@ -93,7 +77,7 @@ export default function Profile() {
                                     <Rating />
                                 </ListItem>
                             </List>
-                            <List>
+                            <List sx={{ pl: '16px', pr:'16px' }}>
                                 <ListItem sx={{ p: 0 }}>
                                     <ButtonGroup sx={{ p: 0, display: "flex", justifyContent: "center", width: '100%'}} {...buttonGroupProps }>
                                         <Button variant="outlined"  startIcon={<MessageIcon />}> Send Messages</Button>
@@ -106,18 +90,18 @@ export default function Profile() {
                         <Box sx={{display:"flex", flexDirection: "column"} }>
                             <Typography variant="h1" sx={{ fontSize: 12 }}>Personal Information</Typography>
                             <Form method="post" action="/profile">
-                                <FormControl>
+                                <FormControl sx={{  width: "100%" }}>
                                     <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: 1 }}>
                                         <Divider />
                                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" , justifyContent: "space-between" }}>
-                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="firstName" value={ user.firstName } >FirstName</TextField>
-                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="lastName" value={ user.lastName }>LastName</TextField>
+                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="firstName" defaultValue={ user.firstName } >FirstName</TextField>
+                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="lastName" defaultValue={ user.lastName }>LastName</TextField>
                                         </Box>
                                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" ,justifyContent: "space-between" }}>
-                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox} name="address" value={ user.address }>Address 1</TextField>
-                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox} name="apartmentNumber" value={ user.apartmentNumber }>Apt #</TextField>
+                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox} name="address" defaultValue={ user.address }>Address 1</TextField>
+                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox} name="apartmentNumber" defaultValue={ user.apartmentNumber }>Apt #</TextField>
                                         </Box>
-                                        <TextField size="small" label="E-mail" disabled={disabledTextBox} value={ user.email } name="email">E-mail</TextField>
+                                        <TextField size="small" label="E-mail" disabled={disabledTextBox} defaultValue={ user.email } name="email">E-mail</TextField>
                                         <ButtonGroup variant="contained" aria-label="Basic button group" sx={{ width: "30%", minWidth: "137px" }} >
                                             <Button sx={{ width: "50%"}} onClick={(e) => { toggleEdit(e) } }>Edit</Button>
                                             <Button sx={{ width: "50%"}} type="submit" name="profileSubmitS">Submit</Button>

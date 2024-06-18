@@ -27,7 +27,7 @@ export const ProfileAction =
                 username: username
             }
             console.log(profileInfo)
-            let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login/updateProfileInfo`,
+            let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/updateProfileInfo`,
 
                 profileInfo
                 ,

@@ -4,7 +4,7 @@ export const ProfileLoader = {
     async loadProfileInfo(token)
     {
         let username = 'danm364@yahoo.com'
-        let data =  await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/login/profileInfo`,
+        let data =  await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/profileInfo`,
             {
                 username
             }
