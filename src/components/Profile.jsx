@@ -36,7 +36,6 @@ export default function Profile() {
     };
 
     function toggleEdit(e) {
-        console.log(e)
         toggleDisabledTextBox(!disabledTextBox)
     }
 
@@ -46,7 +45,8 @@ export default function Profile() {
                 <Grid container sx={{ plr: 2, display: "flex", justifyContent: 'center', columnGap: 5 }}>
                     <Grid item direction="row" spacing={4} sx={{display:"flex", justifyContent: "center"} }>
                         <Box>
-                            <Box component="img" sx={{ height: 300, width: '50%', minWidth: 250 }}></Box>
+                            <Box component="img" sx={{ height: 300, width: '100%', minWidth: 250 }}></Box>
+                            <Button sx={{ width: "100%" }} type="Upload" name="uploadPic">Upload</Button>
                         </Box>
                     </Grid>
                     <Grid item sx={{display: "flex", flexDirection:"column", flexWrap:"wrap" }} >
@@ -104,7 +104,7 @@ export default function Profile() {
                                         <TextField size="small" label="E-mail" disabled={disabledTextBox} defaultValue={ user.email } name="email">E-mail</TextField>
                                         <ButtonGroup variant="contained" aria-label="Basic button group" sx={{ width: "30%", minWidth: "137px" }} >
                                             <Button sx={{ width: "50%"}} onClick={(e) => { toggleEdit(e) } }>Edit</Button>
-                                            <Button sx={{ width: "50%"}} type="submit" name="profileSubmitS">Submit</Button>
+                                            <Button sx={{ width: "50%" }} type="submit" onClick={(e) => { toggleEdit(e) }} name="profileSubmit">Submit</Button>
                                         </ButtonGroup>
                                     </Box>
                                 </FormControl>
