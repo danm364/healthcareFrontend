@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export const ProfileLoader = {
-    async loadProfileInfo(token)
+    async loadProfileInfo(token, user)
     {
-        let username = 'danm364@yahoo.com'
+        let username = user.sub
         let data =  await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/profileInfo`,
             {
                 username

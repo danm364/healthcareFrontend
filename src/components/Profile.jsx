@@ -94,14 +94,14 @@ export default function Profile() {
                                     <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: 1 }}>
                                         <Divider />
                                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" , justifyContent: "space-between" }}>
-                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="firstName" defaultValue={ user.firstName } >FirstName</TextField>
-                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="lastName" defaultValue={ user.lastName }>LastName</TextField>
+                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="firstName" defaultValue={ user?.firstName ? user.firstName : null } >FirstName</TextField>
+                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="lastName" defaultValue={ user?.lastName ? user.lastName : null }>LastName</TextField>
                                         </Box>
                                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" ,justifyContent: "space-between" }}>
-                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox} name="address" defaultValue={ user.address }>Address 1</TextField>
-                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox} name="apartmentNumber" defaultValue={ user.apartmentNumber }>Apt #</TextField>
+                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox} name="address" defaultValue={ user?.address ? user.address : null }>Address 1</TextField>
+                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox} name="apartmentNumber" defaultValue={ user?.apartmentNumber ? user.apartmentNumber : null }>Apt #</TextField>
                                         </Box>
-                                        <TextField size="small" label="E-mail" disabled={disabledTextBox} defaultValue={ user.email } name="email">E-mail</TextField>
+                                        <TextField size="small" label="E-mail" disabled={disabledTextBox} defaultValue={ user?.email } name="email">E-mail</TextField>
                                         <ButtonGroup variant="contained" aria-label="Basic button group" sx={{ width: "30%", minWidth: "137px" }} >
                                             <Button sx={{ width: "50%"}} onClick={(e) => { toggleEdit(e) } }>Edit</Button>
                                             <Button sx={{ width: "50%" }} type="submit" onClick={(e) => { toggleEdit(e) }} name="profileSubmit">Submit</Button>

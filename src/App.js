@@ -59,7 +59,7 @@ export const App = () => {
                             let profileInfo;
                             if (authenticated && user) {
                                 let token = await auth0.getAccessTokenSilently();
-                                profileInfo = await ProfileLoader.loadProfileInfo(token);
+                                profileInfo = await ProfileLoader.loadProfileInfo(token, user);
                             }
                             // Our root route always provides the user, if logged in
                             return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo};

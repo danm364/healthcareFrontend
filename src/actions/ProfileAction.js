@@ -7,7 +7,7 @@ export const ProfileAction =
         let user = await auth0.user;
         let token = await auth0.getAccessTokenSilently();
         let authenticated = auth0.isAuthenticated;
-        let username = 'danm364@yahoo.com'
+        let username = user.sub
 
         if (authenticated && user)
         {
