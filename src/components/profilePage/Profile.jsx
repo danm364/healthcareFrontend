@@ -3,41 +3,67 @@ import {
     IconButton, Avatar, Box, Container, Grid, Rating, Button, ListItemText, List, ListItem,
     Typography, ButtonGroup, Divider, TextField, FormControl
 } from '@mui/material';
-import { sizing, spacing } from '@mui/system'
 import React from "react";
 import { useLoaderData, Form } from "react-router-dom";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CheckIcon from '@mui/icons-material/Check';
 import MessageIcon from '@mui/icons-material/Message';
-import { LocationOnOutlined } from "../../node_modules/@mui/icons-material/index";
 import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
 import PersonIcon from '@mui/icons-material/Person';
 import BugReportIcon from '@mui/icons-material/BugReport';
-import { useTheme } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useState } from 'react';
-import { useFormControl } from '@mui/material/FormControl';
-import axios from "axios";
+import { styled } from '@mui/material/styles';
 
 export default function Profile() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
+
     const auth0 = useAuth0();
     let token = auth0.getAccessTokenSilently()
-    const [disabledTextBox, toggleDisabledTextBox] = useState(true)
+    const [disableSubmitAndTextbox, toggleDisableSubmitAndTextbox] = useState(true)
 
     let user = useLoaderData()?.profileInfo?.data;
+
+    let userInfo =
+    {
+        firstName       : user?.firstName ? user.firstName : "",
+        lastName        : user?.lastName ? user.lastName : "",
+        address         : user?.address ? user.address : null,
+        apartmentNumber : user?.apartmentNumber ? user.apartmentNumber : null,
+        email           : user?.email ? user.email : null
+    }
+
     let isAuthenticated = useLoaderData().isAuthenticated;
     //if (isLoading) {
     //    return <div>Loading ...</div>;
     //}
-    const buttonGroupProps = {
+    const buttonGroupProps =
+    {
         orientation: isSmallScreen ? "vertical" : "horizontal",
     };
 
-    function toggleEdit(e) {
-        toggleDisabledTextBox(!disabledTextBox)
+    function toggleEdit(e)
+    {
+        toggleDisableSubmitAndTextbox(!disableSubmitAndTextbox)
     }
+
+    function toggleSubmit(disableButtons)
+    {
+        setTimeout(() => {
+            toggleDisableSubmitAndTextbox(true)
+        }, 100)
+    }
+
+    const VisuallyHiddenInput = styled('input')({
+        clip: 'rect(0 0 0 0)',
+        clipPath: 'inset(50%)',
+        height: 1,
+        overflow: 'hidden',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        whiteSpace: 'nowrap',
+        width: 1,
+    });
+
 
     return (
         isAuthenticated && (
@@ -46,7 +72,15 @@ export default function Profile() {
                     <Grid item direction="row" spacing={4} sx={{display:"flex", justifyContent: "center"} }>
                         <Box>
                             <Box component="img" sx={{ height: 300, width: '100%', minWidth: 250 }}></Box>
-                            <Button sx={{ width: "100%" }} type="Upload" name="uploadPic">Upload</Button>
+                            <Button
+                                sx={{ width: "100%" }}
+                                type="Upload"
+                                name="uploadPic"
+                                component="label"
+                            >
+                                Upload
+                                <VisuallyHiddenInput type="file" />
+                            </Button>
                         </Box>
                     </Grid>
                     <Grid item sx={{display: "flex", flexDirection:"column", flexWrap:"wrap" }} >
@@ -55,7 +89,7 @@ export default function Profile() {
                                 <ListItem  alignItems="center">
                                     <ListItemText
                                         alignItems="flex-start"
-                                        primary="Daniel McGill"
+                                        primary={ `${userInfo.firstName} ${userInfo.lastName}` }
                                         secondary="Product Designer"
                                     >
                                     </ListItemText>
@@ -94,17 +128,17 @@ export default function Profile() {
                                     <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: 1 }}>
                                         <Divider />
                                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" , justifyContent: "space-between" }}>
-                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="firstName" defaultValue={ user?.firstName ? user.firstName : null } >FirstName</TextField>
-                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disabledTextBox} name="lastName" defaultValue={ user?.lastName ? user.lastName : null }>LastName</TextField>
+                                            <TextField size="small" label="First Name" sx={{ width: "45%" }} disabled={disableSubmitAndTextbox} name="firstName" defaultValue={ userInfo.firstName } ></TextField>
+                                            <TextField size="small" label="Last Name" sx={{ width: "45%" }} disabled={disableSubmitAndTextbox} name="lastName" defaultValue={ userInfo.lastName }></TextField>
                                         </Box>
                                         <Box sx={{ display: "flex", flexDirection: "row", width: "100%" ,justifyContent: "space-between" }}>
-                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disabledTextBox} name="address" defaultValue={ user?.address ? user.address : null }>Address 1</TextField>
-                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disabledTextBox} name="apartmentNumber" defaultValue={ user?.apartmentNumber ? user.apartmentNumber : null }>Apt #</TextField>
+                                            <TextField size="small" label="Address" sx={{ width: "70%" }} disabled={disableSubmitAndTextbox} name="address" defaultValue={ userInfo.address }></TextField>
+                                            <TextField size="small" label="Apt #" sx={{ width: "20%" }} disabled={disableSubmitAndTextbox} name="apartmentNumber" defaultValue={ userInfo.apartmentNumber }></TextField>
                                         </Box>
-                                        <TextField size="small" label="E-mail" disabled={disabledTextBox} defaultValue={ user?.email } name="email">E-mail</TextField>
+                                        <TextField size="small" label="E-mail" required disabled={disableSubmitAndTextbox} defaultValue={ userInfo.email } name="email">l</TextField>
                                         <ButtonGroup variant="contained" aria-label="Basic button group" sx={{ width: "30%", minWidth: "137px" }} >
                                             <Button sx={{ width: "50%"}} onClick={(e) => { toggleEdit(e) } }>Edit</Button>
-                                            <Button sx={{ width: "50%" }} type="submit" onClick={(e) => { toggleEdit(e) }} name="profileSubmit">Submit</Button>
+                                            <Button sx={{ width: "50%" }} type="submit" name="profileSubmit" onClick={(e) => { toggleSubmit(e) }} disabled={ disableSubmitAndTextbox }>Submit</Button>
                                         </ButtonGroup>
                                     </Box>
                                 </FormControl>

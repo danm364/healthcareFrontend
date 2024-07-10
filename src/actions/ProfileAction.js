@@ -8,6 +8,7 @@ export const ProfileAction =
         let token = await auth0.getAccessTokenSilently();
         let authenticated = auth0.isAuthenticated;
         let username = user.sub
+        console.log(request)
 
         if (authenticated && user)
         {
@@ -26,7 +27,6 @@ export const ProfileAction =
                 email: email,
                 username: username
             }
-            console.log(profileInfo)
             let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/updateProfileInfo`,
 
                 profileInfo

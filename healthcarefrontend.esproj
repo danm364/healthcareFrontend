@@ -12,7 +12,9 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\build</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="src\components\loadingPage\" />
     <Folder Include="src\loaders\" />
+    <Folder Include="src\images\" />
     <Folder Include="src\sass\partials\" />
   </ItemGroup>
   <ItemGroup>

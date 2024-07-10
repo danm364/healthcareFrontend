@@ -1,7 +1,6 @@
 import React from 'react';
 import './index.css';
-import Register from './components/Register';
-import Profile from './components/Profile';
+import Profile from './components/profilePage/Profile';
 import LandingPage from './components/landingpage/LandingPage';
 import ErrorPage from './error-pages/error-page';
 import {
@@ -64,7 +63,7 @@ export const App = () => {
                             // Our root route always provides the user, if logged in
                             return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo};
                         },
-                        action: async function action({request }) {
+                        action: async function ({ request }) {
                             await ProfileAction.updateProfileInfo(request, auth0)
                             return redirect("/profile")
                         }
@@ -73,12 +72,6 @@ export const App = () => {
                     {
                         path: "home",
                         element: <LandingPage />,
-                        errorElement: <ErrorPage />
-                    },
-
-                    {
-                        path: "register",
-                        element: <Register />,
                         errorElement: <ErrorPage />
                     }
                 ]
