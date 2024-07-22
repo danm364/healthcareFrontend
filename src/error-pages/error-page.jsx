@@ -7,10 +7,8 @@ import error404 from '../images/404error.jpg';
 
 export default function ErrorPage() {
     const error = useRouteError();
-    console.error(error);
-
     return (
         <Box component="img" alt="404 Error" src={error404} sx={ { width: "100%", height: "100%" } } >
-                </Box>
+        </Box>
     );
 }

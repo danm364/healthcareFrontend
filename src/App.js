@@ -2,6 +2,7 @@ import React from 'react';
 import './index.css';
 import Profile from './components/profilePage/Profile';
 import LandingPage from './components/landingpage/LandingPage';
+import DocumentsPage from './components/documentsPage/Documents';
 import ErrorPage from './error-pages/error-page';
 import {
     RouterProvider,
@@ -12,8 +13,12 @@ import { ProfileLoader } from "./loaders/ProfileLoader";
 import { ProfileAction } from "./actions/ProfileAction";
 import { useAuth0 } from '@auth0/auth0-react';
 import NavBar from "./NavBar"
-import { deepmerge } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {
+    Await,
+    defer,
+    useLoaderData,
+} from "react-router-dom";
 
 export const App = () => {
     const auth0 = useAuth0();
@@ -30,6 +35,7 @@ export const App = () => {
     });
 
     const router = React.useMemo(() => { // <-- memoize router reference
+
         return createBrowserRouter([
             {
                 path: "/",
@@ -37,7 +43,7 @@ export const App = () => {
                 errorElement: <ErrorPage />,
                 loader: async function loader() {
 
-                    let isAuthenticated = auth0.isAuthenticated
+                    
                     return auth0
                 },
                 children: [
@@ -49,24 +55,64 @@ export const App = () => {
                     },
 
                     {
-                        path: "profile",
+                        path: "/profile",
                         element: <Profile />,
                         errorElement: <ErrorPage />,
                         loader: async function loader() {
-                            let user = await auth0.user;
-                            let authenticated = auth0.isAuthenticated;
+                            let user = await auth0?.user;
+                            let authenticated = auth0?.isAuthenticated;
                             let profileInfo;
                             if (authenticated && user) {
-                                let token = await auth0.getAccessTokenSilently();
+                                let token = await auth0?.getAccessTokenSilently();
+
                                 profileInfo = await ProfileLoader.loadProfileInfo(token, user);
+
+
+                                console.log("here")
+                                console.log(window)
+                                return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo }
                             }
+
+                            return {}
+                            
+
                             // Our root route always provides the user, if logged in
-                            return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo};
                         },
                         action: async function ({ request }) {
-                            await ProfileAction.updateProfileInfo(request, auth0)
-                            return redirect("/profile")
+                            let formData = await request.formData();
+                            let intent = formData.get("intent")
+
+                            if (intent === "submit")
+                            {
+                                await ProfileAction.updateProfileInfo(formData, auth0)
+                                return redirect("/profile")
+                            }
+
+                            if (intent === "upload")
+                            {
+                                console.log(formData)
+                                console.log(formData.get("picture"))
+                                return redirect("/profile")
+                            }
+                            
                         }
+                    },
+
+                    {
+                        path: "documents",
+                        element: <DocumentsPage />,
+                        errorElement: <ErrorPage />,
+                        loader: async function loader() {
+                            let user = await auth0?.user;
+                            let authenticated = auth0?.isAuthenticated;
+                            if (authenticated && user) {
+
+                                return { user: user, isAuthenticated: authenticated };
+                            }
+
+                            return user
+                            // Our root route always provides the user, if logged in
+                        },
                     },
 
                     {

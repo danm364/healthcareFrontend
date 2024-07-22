@@ -2,17 +2,16 @@ import axios from "axios";
 
 export const ProfileAction =
 {
-    async updateProfileInfo(request, auth0)
+    async updateProfileInfo(formData, auth0)
     {
         let user = await auth0.user;
         let token = await auth0.getAccessTokenSilently();
         let authenticated = auth0.isAuthenticated;
         let username = user.sub
-        console.log(request)
 
         if (authenticated && user)
         {
-            const profileData = await request.formData();
+            const profileData = formData;
             const firstName = profileData.get("firstName")
             const lastName = profileData.get("lastName")
             const apartmentNumber = profileData.get("apartmentNumber")

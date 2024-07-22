@@ -1,13 +1,16 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { useLoaderData } from "react-router-dom";
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
-    let auth0 = useLoaderData();
+    let auth0 = useAuth0();
+    const navigation = useNavigate();
+
+    let loading = navigation.state === "loading"
 
     let isAuthenticated = auth0?.isAuthenticated;
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -20,6 +23,11 @@ export default function NavBar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    if (auth0.isLoading || loading)
+    {
+        return <div>Loading...</div>
+    }
 
     return (
         <div>
@@ -44,15 +52,23 @@ export default function NavBar() {
                             'aria-labelledby': 'basic-button',
                         }}
                     >
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={handleClose} underline="none">
                             <Link to="/home">Home</Link>
                         </MenuItem>
-                        <MenuItem onClick={handleClose}>
-                            <Link to="/profile">Profile</Link>
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={handleClose} underline="none">
                             <Link to="/about">About</Link>
                         </MenuItem>
+                        {isAuthenticated && (
+                        <Box>
+                            <MenuItem onClick={handleClose} underline="none">
+                                <Link to="/profile">Profile</Link>
+                            </MenuItem>
+                            <MenuItem onClick={handleClose} underline="none">
+                                <Link to="/documents">Documents</Link>
+                            </MenuItem>
+                        </Box>
+
+                        )}
                     </Menu>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         My Website
@@ -60,7 +76,7 @@ export default function NavBar() {
 
                     {!isAuthenticated && (
                         <Button color="inherit" onClick={async () => {
-                            await auth0.loginWithRedirect({
+                            await auth0?.loginWithRedirect({
                                 authorizationParams: {
                                     redirect_uri: 'http://localhost:3000/'
                                 }
@@ -68,7 +84,7 @@ export default function NavBar() {
                         }}>Log in</Button>
                     )}
                     {isAuthenticated && (
-                        <Button color="inherit" onClick={async () => await auth0.logout({ logutParams: { returnTo: 'http://127.0.0.1:3000/' }})}>logout</Button>
+                        <Button color="inherit" onClick={async () => await auth0?.logout({ logutParams: { returnTo: 'http://127.0.0.1:3000/' }})}>logout</Button>
                     )}
                 </Toolbar>
             </AppBar>

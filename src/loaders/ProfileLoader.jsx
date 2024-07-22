@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const ProfileLoader = {
+export const ProfileLoader =
+{
     async loadProfileInfo(token, user)
     {
         let username = user.sub
