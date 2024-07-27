@@ -49,7 +49,7 @@ export const App = () => {
                 children: [
 
                     {
-                        path: "/",
+                        index: true,
                         element: <LandingPage />,
                         errorElement: <ErrorPage />
                     },
