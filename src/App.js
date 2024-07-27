@@ -7,7 +7,8 @@ import ErrorPage from './error-pages/error-page';
 import {
     RouterProvider,
     createBrowserRouter,
-    redirect
+    redirect,
+    useNavigate
 } from "react-router-dom";
 import { ProfileLoader } from "./loaders/ProfileLoader";
 import { ProfileAction } from "./actions/ProfileAction";
@@ -59,17 +60,18 @@ export const App = () => {
                         element: <Profile />,
                         errorElement: <ErrorPage />,
                         loader: async function loader() {
+
                             let user = await auth0?.user;
                             let authenticated = auth0?.isAuthenticated;
                             let profileInfo;
                             if (authenticated && user) {
                                 let token = await auth0?.getAccessTokenSilently();
+                                console.log(window)
+                                redirect(`http://localhost:3000${window.location.pathname}`)
 
                                 profileInfo = await ProfileLoader.loadProfileInfo(token, user);
 
 
-                                console.log("here")
-                                console.log(window)
                                 return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo }
                             }
 
@@ -90,8 +92,6 @@ export const App = () => {
 
                             if (intent === "upload")
                             {
-                                console.log(formData)
-                                console.log(formData.get("picture"))
                                 return redirect("/profile")
                             }
                             
