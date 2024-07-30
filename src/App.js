@@ -58,26 +58,6 @@ export const App = () => {
                         path: "/profile",
                         element: <Profile />,
                         errorElement: <ErrorPage />,
-                        loader: async function loader() {
-                            let user = await auth0?.user;
-                            let authenticated = auth0?.isAuthenticated;
-                            let profileInfo;
-                            if (authenticated && user) {
-                                let token = await auth0?.getAccessTokenSilently();
-
-                                profileInfo = await ProfileLoader.loadProfileInfo(token, user);
-
-
-                                console.log("here")
-                                console.log(window)
-                                return { user: user, isAuthenticated: authenticated, profileInfo: profileInfo }
-                            }
-
-                            return {}
-                            
-
-                            // Our root route always provides the user, if logged in
-                        },
                         action: async function ({ request }) {
                             let formData = await request.formData();
                             let intent = formData.get("intent")
@@ -102,17 +82,6 @@ export const App = () => {
                         path: "documents",
                         element: <DocumentsPage />,
                         errorElement: <ErrorPage />,
-                        loader: async function loader() {
-                            let user = await auth0?.user;
-                            let authenticated = auth0?.isAuthenticated;
-                            if (authenticated && user) {
-
-                                return { user: user, isAuthenticated: authenticated };
-                            }
-
-                            return user
-                            // Our root route always provides the user, if logged in
-                        },
                     },
 
                     {

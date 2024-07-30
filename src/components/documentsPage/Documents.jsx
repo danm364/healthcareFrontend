@@ -20,23 +20,21 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import LoadingPage from "../loadingPage/LoadingPage";
+
 
 export default function Profile() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
-    let isAuthenticated = useLoaderData()?.isAuthenticated;
     let auth0 = useAuth0();
+    let isAuthenticated = auth0.isAuthenticated
 
     const navigation = useNavigate();
 
     let loading = navigation.state === "loading"
 
-    if (!isAuthenticated) {
-        return <Navigate to="/home" replace={true} />
-    }
-
     if (auth0.isLoading || loading)
     {
-        return <div>Loading...</div>
+        return <LoadingPage />
     }
 
     return (
