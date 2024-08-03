@@ -20,6 +20,8 @@ import {
     useLoaderData,
 } from "react-router-dom";
 
+import NewLandingPage from "./components/newLandingPage/NewLandingPage"
+
 export const App = () => {
     const auth0 = useAuth0();
 
@@ -30,6 +32,15 @@ export const App = () => {
                 tablet: 640,
                 laptop: 1024,
                 desktop: 1200,
+            },
+        },
+        palette: {
+            mode: 'light',
+            primary: {
+                main: '#1976d2',
+            },
+            secondary: {
+                main: '#f50057',
             },
         },
     });
@@ -86,7 +97,7 @@ export const App = () => {
 
                     {
                         path: "home",
-                        element: <LandingPage />,
+                        element: <NewLandingPage />,
                         errorElement: <ErrorPage />
                     }
                 ]

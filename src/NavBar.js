@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from "react-router-dom";
+import Footer from "./components/landingpage/components/Footer"
 
 export default function NavBar() {
     let auth0 = useAuth0();
@@ -30,7 +31,7 @@ export default function NavBar() {
     }
 
     return (
-        <div>
+        <div sx={{ height: "800px" } }>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -71,7 +72,7 @@ export default function NavBar() {
                         )}
                     </Menu>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        My Website
+                        Healthease
                     </Typography>
 
                     {!isAuthenticated && (

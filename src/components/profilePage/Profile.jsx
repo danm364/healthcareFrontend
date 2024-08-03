@@ -4,7 +4,7 @@ import {
     Typography, ButtonGroup, Divider, TextField, FormControl
 } from '@mui/material';
 import React, { useEffect } from "react";
-import { useLoaderData, Form } from "react-router-dom";
+import { useLoaderData, Form, Navigate } from "react-router-dom";
 import MessageIcon from '@mui/icons-material/Message';
 import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
 import PersonIcon from '@mui/icons-material/Person';
@@ -37,12 +37,15 @@ export default function Profile() {
 
     console.log(window)
 
+
+
+
     useEffect(() =>
     {
         async function returnInfo()
         {
             let token = await auth0?.getAccessTokenSilently()
-            let user = await auth0.user.sub;
+            let user = await auth0?.user.sub;
 
             let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
             profileInfo = profileInfo.data
@@ -59,6 +62,10 @@ export default function Profile() {
         returnInfo()
 
     }, [auth0])
+
+    if (!isAuthenticated) {
+        return <Navigate to="/home" replace={true} />
+    }
 
     const buttonGroupProps =
     {
@@ -82,9 +89,11 @@ export default function Profile() {
         width: 1,
     });
 
+
     if (isLoading || load || useEffectLoading) {
         return <LoadingPage />;
     }
+
 
     return (
         isAuthenticated && (
