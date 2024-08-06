@@ -1,20 +1,27 @@
+//auth0
 import { useAuth0 } from "@auth0/auth0-react";
+//mui components
 import {
     IconButton, Avatar, Box, Container, Grid, Rating, Button, ListItemText, List, ListItem,
-    Typography, ButtonGroup, Divider, TextField, FormControl
+    Typography, ButtonGroup, Divider, TextField, FormControl, useMediaQuery
 } from '@mui/material';
-import React, { useEffect } from "react";
-import { useLoaderData, Form, Navigate } from "react-router-dom";
-import MessageIcon from '@mui/icons-material/Message';
+//react
+import React, { useEffect, useState } from "react";
+import { useLoaderData, Form, Navigate, useNavigate } from "react-router-dom";
+
+//icons
 import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
+import MessageIcon from '@mui/icons-material/Message';
 import PersonIcon from '@mui/icons-material/Person';
 import BugReportIcon from '@mui/icons-material/BugReport';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useState } from 'react';
-import { styled } from '@mui/material/styles';
-import { useNavigate } from "react-router-dom";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+
+import { styled } from '@mui/material/styles';
+
+//loaders
 import { ProfileLoader } from "../../loaders/ProfileLoader";
+
+//pages
 import LoadingPage from "../loadingPage/LoadingPage";
 
 export default function Profile() {
@@ -35,19 +42,16 @@ export default function Profile() {
     let isAuthenticated = auth0?.isAuthenticated;
     let isLoading = auth0?.isLoading;
 
-    console.log(window)
-
-
-
-
     useEffect(() =>
     {
         async function returnInfo()
         {
             let token = await auth0?.getAccessTokenSilently()
-            let user = await auth0?.user.sub;
+            let user = await auth0?.user?.sub;
 
-            let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
+            if (user && token && isAuthenticated)
+            {
+                        let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
             profileInfo = profileInfo.data
             setUserInfo({
                 firstName: profileInfo?.firstName ? profileInfo.firstName : "",
@@ -56,6 +60,9 @@ export default function Profile() {
                 apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
                 email: profileInfo?.email ? profileInfo.email : ""
             })
+            }
+
+
 
             setUseEffectLoading(false)
         }

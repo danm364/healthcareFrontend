@@ -1,5 +1,4 @@
-import { Box, Typography, Container, useTheme, Divider } from '@mui/material'
-import { alpha } from '@mui/material';
+import { Box, Typography, Container, useTheme, Divider, alpha } from '@mui/material'
 import HeroImage from '../../images/heroimage.jpg'
 
 

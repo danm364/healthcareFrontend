@@ -1,33 +1,33 @@
+
+//auth0
 import { useAuth0 } from "@auth0/auth0-react";
+
+//mui components
 import {
     IconButton, Avatar, Box, Container, Grid, Rating, Button, ListItemText, List, ListItem,
-    Typography, ButtonGroup, Divider, TextField, FormControl
+    Typography, ButtonGroup, Divider, TextField, FormControl, useTheme, useMediaQuery,
+    AccordionSummary, AccordionDetails, Accordion
 } from '@mui/material';
-import React from "react";
-import { useLoaderData, Form } from "react-router-dom";
-import MessageIcon from '@mui/icons-material/Message';
-import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
-import PersonIcon from '@mui/icons-material/Person';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useState } from 'react';
-import { styled } from '@mui/material/styles';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+
+//React
+import { useNavigate, useLoaderData, Form } from "react-router-dom";
+import { useState, React } from 'react';
+
+//icons
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { Navigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+
 import LoadingPage from "../loadingPage/LoadingPage";
+import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
 
 export default function Profile() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
+
+    //auth0
     let auth0 = useAuth0();
     let isAuthenticated = auth0.isAuthenticated
 
+    const theme = useTheme();
     const navigation = useNavigate();
 
     let loading = navigation.state === "loading"
@@ -48,12 +48,25 @@ export default function Profile() {
                     >
                         <Typography>2024</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
-                        <Typography>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                            malesuada lacus ex, sit amet blandit leo lobortis eget.
-                        </Typography>
+                    <AccordionDetails sx={{ display: "flex", justifyContent: "space-between", borderBottom: `1px solid ${theme.palette.primary.main}` }}>
+                        <Box sx={ { width: "100%"} }>
+                            <Typography>Date Submitted: Jan 2024</Typography>
+                            <Typography>Claim Rejected: Mar 2024</Typography>
+                        </Box>
                     </AccordionDetails>
+                    <AccordionDetails sx={{ display: "flex", justifyContent: "space-between", borderBottom: `1px solid ${theme.palette.primary.main}` }}>
+                        <Box sx={{ width: "100%" }}>
+                            <Typography>Date Submitted: Jan 2024</Typography>
+                            <Typography>Claim Rejected: Mar 2024</Typography>
+                        </Box>
+                    </AccordionDetails>
+                    <AccordionDetails sx={{ display: "flex", justifyContent: "space-between" }}>
+                        <Box sx={{ width: "100%" }}>
+                            <Typography>Date Submitted: Jan 2024</Typography>
+                            <Typography>Claim Rejected: Mar 2024</Typography>
+                        </Box>
+                    </AccordionDetails>
+
                 </Accordion>
                 <Accordion>
                     <AccordionSummary
