@@ -51,15 +51,15 @@ export default function Profile() {
 
             if (user && token && isAuthenticated)
             {
-                        let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
-            profileInfo = profileInfo.data
-            setUserInfo({
-                firstName: profileInfo?.firstName ? profileInfo.firstName : "",
-                lastName: profileInfo?.lastName ? profileInfo.lastName : "",
-                address: profileInfo?.address ? profileInfo.address : "",
-                apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
-                email: profileInfo?.email ? profileInfo.email : ""
-            })
+                let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
+                profileInfo = profileInfo.data
+                setUserInfo({
+                    firstName: profileInfo?.firstName ? profileInfo.firstName : "",
+                    lastName: profileInfo?.lastName ? profileInfo.lastName : "",
+                    address: profileInfo?.address ? profileInfo.address : "",
+                    apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
+                    email: profileInfo?.email ? profileInfo.email : ""
+                })
             }
 
 
