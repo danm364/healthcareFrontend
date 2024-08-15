@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Footer from "./components/landingpage/components/Footer"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
+import { AuthLayout } from './AuthLayout'
+import { Auth0Provider } from '@auth0/auth0-react';
+
 
 export default function NavBar() {
 
@@ -95,8 +98,8 @@ export default function NavBar() {
                         )}
                     </Toolbar>
                 </AppBar>
-                <Outlet />
-            </div>
+                <Outlet auth0={ auth0 } />
+                </div>
         );
     }
     else {
@@ -119,7 +122,7 @@ export default function NavBar() {
                         <Button color="inherit" onClick={ () => navigation("about") }>About</Button>
                         {isAuthenticated && (
                         <Box >
-                            <Button color="inherit" color="inherit" onClick={() => navigation("profile")}>Profile</Button>
+                            <Button color="inherit" onClick={() => navigation("profile")}>Profile</Button>
                             <Button color="inherit" onClick={() => navigation("documents")} >Documents</Button>
                         </Box>
                         )
@@ -146,7 +149,7 @@ export default function NavBar() {
                     </Box>
                 </Box>
             <Outlet />
-            </Box>
+                </Box>
         )
     }
 }

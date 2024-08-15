@@ -29,6 +29,9 @@ export default function Profile() {
     const navigation = useNavigate();
     let load = navigation.state === "loading"
 
+    let data = useLoaderData()
+    console.log(data)
+
     //data
     const [userInfo, setUserInfo] = useState({})
     const [useEffectLoading, setUseEffectLoading] = useState(true)
@@ -42,33 +45,33 @@ export default function Profile() {
     let isAuthenticated = auth0?.isAuthenticated;
     let isLoading = auth0?.isLoading;
 
-    useEffect(() =>
-    {
-        async function returnInfo()
-        {
-            let token = await auth0?.getAccessTokenSilently()
-            let user = await auth0?.user?.sub;
+    //useEffect(() =>
+    //{
+    //    async function returnInfo()
+    //    {
+    //        let token = await auth0?.getAccessTokenSilently()
+    //        let user = await auth0?.user?.sub;
 
-            if (user && token && isAuthenticated)
-            {
-                let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
-                profileInfo = profileInfo.data
-                setUserInfo({
-                    firstName: profileInfo?.firstName ? profileInfo.firstName : "",
-                    lastName: profileInfo?.lastName ? profileInfo.lastName : "",
-                    address: profileInfo?.address ? profileInfo.address : "",
-                    apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
-                    email: profileInfo?.email ? profileInfo.email : ""
-                })
-            }
+    //        if (user && token && isAuthenticated)
+    //        {
+    //            let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
+    //            profileInfo = profileInfo.data
+    //            setUserInfo({
+    //                firstName: profileInfo?.firstName ? profileInfo.firstName : "",
+    //                lastName: profileInfo?.lastName ? profileInfo.lastName : "",
+    //                address: profileInfo?.address ? profileInfo.address : "",
+    //                apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
+    //                email: profileInfo?.email ? profileInfo.email : ""
+    //            })
+    //        }
 
 
 
-            setUseEffectLoading(false)
-        }
-        returnInfo()
+    //        setUseEffectLoading(false)
+    //    }
+    //    returnInfo()
 
-    }, [auth0])
+    //}, [auth0])
 
     if (!isAuthenticated) {
         return <Navigate to="/home" replace={true} />
