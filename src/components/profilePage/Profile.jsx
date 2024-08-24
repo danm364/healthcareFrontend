@@ -18,8 +18,9 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 import { styled } from '@mui/material/styles';
 
-//loaders
+//loaders and actions
 import { ProfileLoader } from "../../loaders/ProfileLoader";
+import { ProfileAction } from "../../actions/ProfileAction";
 
 //pages
 import LoadingPage from "../loadingPage/LoadingPage";
@@ -34,6 +35,7 @@ export default function Profile() {
 
     //data
     const [userInfo, setUserInfo] = useState({})
+    const [profileInput, setProfileInput] = useState({})
     const [useEffectLoading, setUseEffectLoading] = useState(true)
 
     //display
@@ -45,33 +47,33 @@ export default function Profile() {
     let isAuthenticated = auth0?.isAuthenticated;
     let isLoading = auth0?.isLoading;
 
-    //useEffect(() =>
-    //{
-    //    async function returnInfo()
-    //    {
-    //        let token = await auth0?.getAccessTokenSilently()
-    //        let user = await auth0?.user?.sub;
+    useEffect(() =>
+    {
+        async function returnInfo()
+        {
+            let token = await auth0?.getAccessTokenSilently()
+            let user = await auth0?.user?.sub;
 
-    //        if (user && token && isAuthenticated)
-    //        {
-    //            let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
-    //            profileInfo = profileInfo.data
-    //            setUserInfo({
-    //                firstName: profileInfo?.firstName ? profileInfo.firstName : "",
-    //                lastName: profileInfo?.lastName ? profileInfo.lastName : "",
-    //                address: profileInfo?.address ? profileInfo.address : "",
-    //                apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
-    //                email: profileInfo?.email ? profileInfo.email : ""
-    //            })
-    //        }
+            if (user && token && isAuthenticated)
+            {
+                let profileInfo = await ProfileLoader.loadProfileInfo(token, user)
+                profileInfo = profileInfo.data
+                setUserInfo({
+                    firstName: profileInfo?.firstName ? profileInfo.firstName : "",
+                    lastName: profileInfo?.lastName ? profileInfo.lastName : "",
+                    address: profileInfo?.address ? profileInfo.address : "",
+                    apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
+                    email: profileInfo?.email ? profileInfo.email : ""
+                })
+            }
 
 
 
-    //        setUseEffectLoading(false)
-    //    }
-    //    returnInfo()
+            setUseEffectLoading(false)
+        }
+        returnInfo()
 
-    //}, [auth0])
+    }, [auth0, isAuthenticated])
 
     if (!isAuthenticated) {
         return <Navigate to="/home" replace={true} />
@@ -104,11 +106,26 @@ export default function Profile() {
         return <LoadingPage />;
     }
 
+    async function SubmitProfileForm(e)
+    {
+        e.preventDefault();
+        let formData = {
+            firstName: e.target.firstName.value,
+            lastName: e.target.lastName.value,
+            email: e.target.email.value,
+            address: e.target.address.value,
+            apartmentNumber: e.target.apartmentNumber.value
+        }
+        setUserInfo(formData)
+
+        await ProfileAction.updateProfileInfo(formData, auth0)
+    }
+
 
     return (
         isAuthenticated && (
-            <Container maxwidth="sm" sx={{ height: 800, mt: 5, display:"flex"}} >
-                <Grid container sx={{ plr: 2, display: "flex", justifyContent: 'center', columnGap: 5 }}>
+            <Container maxwidth="sm" sx={{ height: 800, mt: 5, display:"flex", flexDirection:"column",  alignItems:"center"}} >
+                <Grid container sx={{ plr: 2, display: "flex", justifyContent: 'center', columnGap: 5, width:"80%" }}>
                     <Grid item direction="row" spacing={4} sx={{display:"flex", justifyContent: "center"} }>
                         <Form method="post" action="/profile">
                             <Box component="img" sx={{ height: 300, width: '100%', minWidth: 250 }}></Box>
@@ -166,7 +183,7 @@ export default function Profile() {
                         </Box>
                         <Box sx={{display:"flex", flexDirection: "column"} }>
                             <Typography variant="h1" sx={{ fontSize: 12 }}>Personal Information</Typography>
-                            <Form method="post" action="/profile">
+                            <Form method="post" onSubmit={ SubmitProfileForm }>
                                 <FormControl sx={{  width: "100%" }}>
                                     <Box sx={{ display: "flex", flexDirection: "column", width: "100%", rowGap: 1 }}>
                                         <Divider />
@@ -197,7 +214,13 @@ export default function Profile() {
                             </Form>
                         </Box>
                     </Grid>
+
                 </Grid>
+                <Box sx={{display:"flex"}}>
+                        <h1>Linked Accounts:</h1>
+
+                </Box>                     
+
             </ Container>
         )
     );
