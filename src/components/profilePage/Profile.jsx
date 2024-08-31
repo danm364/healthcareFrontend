@@ -26,6 +26,7 @@ import { ProfileAction } from "../../actions/ProfileAction";
 
 //pages
 import LoadingPage from "../loadingPage/LoadingPage";
+import LinkedAccounts from "./LinkedAccounts";
 
 export default function Profile() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
@@ -130,22 +131,7 @@ export default function Profile() {
         await ProfileAction.updateProfileInfo(formData, auth0)
     }
 
-    async function CallAuthorization()
-    {
-        
 
-        const accessToken = await auth0.getAccessTokenSilently();
-        const {sub} = user
-
-        const results = await auth0?.loginWithRedirect({
-            authorizationParams: {
-                client_id: 'OJEAiU4DNGAh06kPtZnsq90T36O9AIy6',
-                connection:"aetna",
-                redirect_uri: 'http://localhost:3000/profile'
-            }
-        })
-
-        console.log(results)
         // axios.get("https://healthease.us.auth0.com/authorize?response_type=token&client_id=OJEAiU4DNGAh06kPtZnsq90T36O9AIy6&redirect_uri=http://localhost:3000/profile&connection=aetna&scope=openid%20profile%20email",
         //     {
 
@@ -164,7 +150,6 @@ export default function Profile() {
         // .catch((err) => {
         //     console.log(err)
         // })
-    }
 
     return (
         isAuthenticated && (
@@ -261,52 +246,7 @@ export default function Profile() {
                             </Grid>
                     </Grid>
                     <Box sx={{color:theme.palette.grey[400]}} component="h1">Linked Accounts:</Box>
-                
-                {(!matches) && (
-                    <Box sx={{display:"flex"}}>
-                        <Grid sx={{width:"100%"}}>
-                            <Box sx={{display:"flex", justifyContent:"space-between", width:"100%", background:theme.palette.primary.main, color:theme.palette.common.white}}>
-                                <Box sx={{width:"25%", p:"1%"}}>Connection</Box>
-                                <Box sx={{width:"25%", p:"1%"}}>Url</Box>
-                                <Box sx={{width:"25%", p:"1%"}}>Insurance Company</Box>
-                                <Box sx={{width:"25%", textAlign:"center", p:"1%", display:"flex", justifyContent:"end"}}>
-                                    <Box sx={{width:"60%", textAlign:"start"}}>
-                                        Actions
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box sx={{display:"flex", justifyContent:"space-between", width:"100%"}}>
-                                <Box sx={{width:"25%" , p:"1%"}}>Aetna-Auth</Box>
-                                <Box sx={{width:"25%", p:"1%"}}>https://aetna.com</Box>
-                                <Box sx={{width:"25%", p:"1%"}}>Aetna</Box>
-                                <Button sx={{ p:"1%",width:"27%", display:"flex", textAlign:"start", color:theme.palette.success.light, justifyContent:"end" }} onClick={CallAuthorization}>
-                                    <Box sx={{width:"60%", textAlign:"start", p:"0%"}}>Link</Box>        
-                                </Button>
-                            </Box>                                
-                        </Grid>                                
-                    </Box>  
-                )}
-                {(matches) && (
-                    <Box sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-                        <Box sx={{display:"flex", width:"60%"}}> 
-                            <Box sx={{p:"1%", width:"50%", background:theme.palette.primary.main, color:theme.palette.common.white, textAlign:"center"}}>Connection</ Box>
-                            <Box sx={{p:"1%", width:"50%", textAlign:"center"}}>Aetna-Auth</ Box>
-                        </Box>
-                        <Box sx={{display:"flex", width:"60%"}}> 
-                            <Box sx={{p:"1%", width:"50%", background:theme.palette.primary.main, color:theme.palette.common.white, textAlign:"center"}}>Url </ Box>
-                            <Box sx={{p:"1%", width:"50%", textAlign:"center"}}> </ Box>
-                        </Box>
-                        <Box sx={{display:"flex", width:"60%"}}> 
-                            <Box sx={{p:"1%", width:"50%", background:theme.palette.primary.main, color:theme.palette.common.white, textAlign:"center"}}>Insurance Company </ Box>
-                            <Box sx={{p:"1%", width:"50%", textAlign:"center"}}> </ Box>
-                        </Box>
-                        <Box sx={{display:"flex", width:"60%"}}> 
-                            <Box sx={{p:"1%", width:"50%", background:theme.palette.primary.main, color:theme.palette.common.white, textAlign:"center"}}>Actions </ Box>
-                            <Box sx={{p:"1%", width:"50%", color:theme.palette.success.light,  textAlign:"center"  }} >Link</Box>
-                        </Box>
-                    </Box >
-                )}
-
+                    <LinkedAccounts />
                 </Box>                                  
             </ Container>
         )
