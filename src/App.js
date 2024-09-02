@@ -26,21 +26,25 @@ import { AuthLayout } from './AuthLayout'
 import ErrorImage from "./images/404error.webp"
 
 
+
+
+
 export const router = createBrowserRouter(
     createRoutesFromElements(
             <Route path="/" element={<NavBar />} errorElement={<ErrorPage />}>
-                <Route index element={<LandingPage />} errorElement={<ErrorPage />} ></Route>
-                <Route
-                    path="/profile"
-                    element={<Profile />}
-                    errorElement={<ErrorPage />}
+                    <Route index element={<LandingPage />} errorElement={<ErrorPage />} ></Route>
+                    <Route
+                        path="/profile"
+                        element={<Profile />}
+                        errorElement={<ErrorPage />}
 
-                >
+                    >
 
-                </Route>
-                <Route path="/documents" element={<DocumentsPage />} errorElement={<ErrorPage />} ></Route>
-                <Route path="/home" element={<NewLandingPage />} errorElement={<ErrorPage />} ></Route>
-                <Route path="/about" element={ <ErrorPage />}></Route>
+                    </Route>
+                    <Route path="/documents" element={<DocumentsPage />} errorElement={<ErrorPage />} ></Route>
+                    <Route path="/home" element={<NewLandingPage />} errorElement={<ErrorPage />} ></Route>
+                    <Route path="/about" element={ <ErrorPage />}></Route>
+
             </Route>
     ))
 

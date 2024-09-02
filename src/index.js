@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { router } from "./App"
 import { RouterProvider } from '../node_modules/react-router-dom/dist/index';
 import { Auth0Provider } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
+import { linkContext } from './utilities/LinkContext';
 
 const theme = createTheme({
     breakpoints: {
@@ -26,6 +28,10 @@ const theme = createTheme({
     },
 });
 
+
+
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Auth0Provider
@@ -39,9 +45,9 @@ root.render(
             scope: "openid+profile+email"
         }}
     >
-        <ThemeProvider theme={theme}>
-            <RouterProvider router={router } />
-        </ThemeProvider>
+            <ThemeProvider theme={theme}>
+                <RouterProvider router={router } />
+            </ThemeProvider>
     </Auth0Provider>
 );
 

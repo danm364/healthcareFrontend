@@ -16,6 +16,9 @@ import { useLoaderData, Form, Navigate, useNavigate } from "react-router-dom";
 
 //loaders and actions
 
+//utilites
+import {linkContext} from "../../utilities/LinkContext"
+
 //pages
 
 export default function LinkedAccounts() {
@@ -37,18 +40,22 @@ export default function LinkedAccounts() {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('tablet'));
 
+    const newresult = useAuth0(linkContext);
+
     async function CallAuthorization()
     {
 
         const accessToken = await auth0.getAccessTokenSilently();
         const {sub} = user
 
-        const results = await auth0.loginWithRedirect({
-            authorizationParams: {
-                client_id: 'OJEAiU4DNGAh06kPtZnsq90T36O9AIy6',
-                connection:"aetna",
-            }
-        })
+        console.log(newresult)
+
+        // const results = await loginWithPopup({
+        //     authorizationParams: {
+        //         client_id: 'OJEAiU4DNGAh06kPtZnsq90T36O9AIy6',
+        //         connection:"aetna",
+        //     }
+        // })
 
         // console.log(results)
 
