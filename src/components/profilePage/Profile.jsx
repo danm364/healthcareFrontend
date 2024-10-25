@@ -55,8 +55,6 @@ export default function Profile() {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('tablet'));
 
-    console.log(theme)
-
     useEffect(() =>
     {
         async function returnInfo()
@@ -130,26 +128,6 @@ export default function Profile() {
 
         await ProfileAction.updateProfileInfo(formData, auth0)
     }
-
-
-        // axios.get("https://healthease.us.auth0.com/authorize?response_type=token&client_id=OJEAiU4DNGAh06kPtZnsq90T36O9AIy6&redirect_uri=http://localhost:3000/profile&connection=aetna&scope=openid%20profile%20email",
-        //     {
-
-        //     }
-        //     ,
-        //     {
-        //         withCredentials: true,
-        //         headers:
-        //         {
-        //             Authorization: `Bearer ${accessToken}`,
-        //         },
-        //     }
-        // ).then((response) => {
-        //     console.log(response)
-        // })
-        // .catch((err) => {
-        //     console.log(err)
-        // })
 
     return (
         isAuthenticated && (

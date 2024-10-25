@@ -24,11 +24,9 @@ import {linkContext} from "../../utilities/LinkContext"
 export default function LinkedAccounts() {
 
     let data = useLoaderData()
-    console.log(data)
+    let [connections, setConnections] = useState({})
+    let [LoadingForPage, setLoadingForPage] = useState(false)
 
-    //data
-
-    //display
 
     //auth0
     const auth0 = useAuth0();
@@ -40,48 +38,89 @@ export default function LinkedAccounts() {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('tablet'));
 
-    const newresult = useAuth0(linkContext);
+    let SecondaryAccount = useAuth0(linkContext);
+
+    useEffect(() => {
+            async function getConnections()
+            {
+                let accessToken = await auth0.getAccessTokenSilently();
+                let connectionData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+
+                setConnections(connectionData.data)
+                setLoadingForPage(true)
+    console.log(connections)
+
+
+                
+            }
+
+            getConnections()
+    }, [])
+
 
     async function CallAuthorization()
     {
 
         const accessToken = await auth0.getAccessTokenSilently();
-        const {sub} = user
+        const id = await auth0.getIdTokenClaims();
 
-        console.log(newresult)
+        
+        await SecondaryAccount.loginWithPopup(
+            {
+                authorizationParams: {
+                    connection: 'cigna',
+                    redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`
 
-        // const results = await loginWithPopup({
-        //     authorizationParams: {
-        //         client_id: 'OJEAiU4DNGAh06kPtZnsq90T36O9AIy6',
-        //         connection:"aetna",
-        //     }
-        // })
+                }
 
-        // console.log(results)
+            }
+        )
 
-        // const {
-        //     __raw: targetUserIdToken,
-        //     email_verified,
-        //     email,
-        //   } = await getIdTokenClaims();
+        let cignaid = await SecondaryAccount.getIdTokenClaims()
+        let auth0Id = await auth0.getIdTokenClaims()
 
-        //   const users = await axios.post(`https://healthease.us.auth0.comapi/v2/users/${sub}/identities`, {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //       Authorization: `Bearer ${accessToken}`,
-        //     },
-        //     body: JSON.stringify({
-        //       link_with: targetUserIdToken,
-        //     }),
-        //   });
+        let authData = 
+        {
 
-        //   console.log(users)
+        }
+
+        let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/userAuth0Info`,
+            {
+                 
+                    PrimaryAccountID: auth0Id?.sub,
+                    PrimaryAccessToken: await auth0.getAccessTokenSilently(),
+                    SecondaryAccountID: cignaid?.sub
+            },
+            {
+                withCredentials: true,
+                headers:
+                {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        )
+            .then((response) =>
+            {
+                return (response);
+            })
+            .catch((err) =>
+            {
+                console.log(err)
+                return err
+            })
     }
 
     return (
 <Box>
-        {(!matches) && (
+        {(!matches && LoadingForPage) && (
             <Box sx={{display:"flex"}}>
                 <Grid sx={{width:"100%"}}>
                     <Box sx={{display:"flex", justifyContent:"space-between", width:"100%", background:theme.palette.primary.main, color:theme.palette.common.white}}>
@@ -94,14 +133,16 @@ export default function LinkedAccounts() {
                             </Box>
                         </Box>
                     </Box>
+                    { connections.map((connection) => 
                     <Box sx={{display:"flex", justifyContent:"space-between", width:"100%"}}>
-                        <Box sx={{width:"25%" , p:"1%"}}>Aetna-Auth</Box>
+                        <Box sx={{width:"25%" , p:"1%"}}>{connection.name}</Box>
                         <Box sx={{width:"25%", p:"1%"}}>https://aetna.com</Box>
                         <Box sx={{width:"25%", p:"1%"}}>Aetna</Box>
                         <Button sx={{ p:"1%",width:"27%", display:"flex", textAlign:"start", color:theme.palette.success.light, justifyContent:"end" }} onClick={CallAuthorization}>
                             <Box sx={{width:"60%", textAlign:"start", p:"0%"}}>Link</Box>        
                         </Button>
                     </Box>                                
+                      )}
                 </Grid>                                
             </Box>  
         )}

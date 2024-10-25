@@ -8,7 +8,9 @@ import {
     RouterProvider,
     createBrowserRouter,
     redirect, 
-    Route
+    Route,
+    Navigate,
+    Link
 } from "react-router-dom";
 import { ProfileLoader } from "./loaders/ProfileLoader";
 
@@ -24,6 +26,7 @@ import NewLandingPage from "./components/newLandingPage/NewLandingPage"
 import { createRoutesFromElements } from '../node_modules/react-router-dom/dist/index';
 import { AuthLayout } from './AuthLayout'
 import ErrorImage from "./images/404error.webp"
+import ContextLayer from './ContextLayer';
 
 
 
@@ -31,7 +34,7 @@ import ErrorImage from "./images/404error.webp"
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
-            <Route path="/" element={<NavBar />} errorElement={<ErrorPage />}>
+            <Route path="/" element={<ContextLayer />} errorElement={<ErrorPage />}>
                     <Route index element={<LandingPage />} errorElement={<ErrorPage />} ></Route>
                     <Route
                         path="/profile"
@@ -44,6 +47,7 @@ export const router = createBrowserRouter(
                     <Route path="/documents" element={<DocumentsPage />} errorElement={<ErrorPage />} ></Route>
                     <Route path="/home" element={<NewLandingPage />} errorElement={<ErrorPage />} ></Route>
                     <Route path="/about" element={ <ErrorPage />}></Route>
+                    <Route path="/login" element = { <Link to = {{pathname : process.env.REACT_APP_AUTHORIZE_ENDPOINT}} />}/>
 
             </Route>
     ))

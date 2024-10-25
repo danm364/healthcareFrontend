@@ -34,20 +34,20 @@ const theme = createTheme({
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <Auth0Provider
-        domain={process.env.REACT_APP_AUTH_DOMAIN}
-        clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
-        audience={process.env.REACT_APP_AUTH_AUDIENCE}
-        authorizationParams=
-        {{
-            audience: `${process.env.REACT_APP_AUTH_AUDIENCE}`,
-            redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}`,
-            scope: "openid+profile+email"
-        }}
-    >
+    // <Auth0Provider
+    //     domain={process.env.REACT_APP_AUTH_DOMAIN}
+    //     clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+    //     audience={process.env.REACT_APP_AUTH_AUDIENCE}
+    //     authorizationParams=
+    //     {{
+    //         audience: `${process.env.REACT_APP_AUTH_AUDIENCE}`,
+    //         redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}`,
+    //         scope: "openid+profile+email"
+    //     }}
+    // >
             <ThemeProvider theme={theme}>
                 <RouterProvider router={router } />
             </ThemeProvider>
-    </Auth0Provider>
+    // </Auth0Provider>
 );
 

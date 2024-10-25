@@ -29,6 +29,8 @@
     "build:test": "env-cmd -f .env.test react-scripts build",
     "start:production": "env-cmd -f .env.production react-scripts start",
     "build:production": "env-cmd -f .env.production react-scripts build",
+    "start:webtest": "env-cmd -f .env.webtest react-scripts start",
+    "build:webtest": "env-cmd -f .env.webtest react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

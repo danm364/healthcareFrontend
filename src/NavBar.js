@@ -12,27 +12,7 @@ import { AuthLayout } from './AuthLayout'
 import { Auth0Provider } from '@auth0/auth0-react';
 import { linkContext } from './utilities/LinkContext';
 
-const Auth0ProviderSecondaryAccount = ({children, ...props}) => 
-    {
-        const navigate = useNavigate();
-        const onRedirectCallback = (appState) => {
-          navigate((appState && appState.returnTo) || window.location.pathname);
-        };
-        return (
-          <Auth0Provider onRedirectCallback={onRedirectCallback} {...props}>
-            {children}
-          </Auth0Provider>
-        );
-    }
-    
-    const linkProviderConfig = {
-        clientId:"OJEAiU4DNGAh06kPtZnsq90T36O9AIy6",
-        connection:"aetna",
-        context: linkContext,
-        scope: 'openid email profile',
-        redirectUri: `${window.location.origin}?secondary`,
-        skipRedirectCallback: window.location.href.includes('?primary'),
-      };
+
 
 export default function NavBar() {
 
@@ -62,7 +42,6 @@ export default function NavBar() {
 
     if (matches) {
         return (
-            <Auth0ProviderSecondaryAccount  {...linkProviderConfig}>
                 <div sx={{ height: "800px" }}>
                     <AppBar position="static">
                         <Toolbar>
@@ -111,19 +90,18 @@ export default function NavBar() {
                                 <Button color="inherit" onClick={async () => {
                                     await auth0?.loginWithRedirect({
                                         authorizationParams: {
-                                            redirect_uri: 'http://localhost:3000/'
+                                            redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}`
                                         }
                                     })
                                 }}>Log in</Button>
                             )}
                             {isAuthenticated && (
-                                <Button color="inherit" onClick={async () => await auth0?.logout({ logutParams: { returnTo: 'http://127.0.0.1:3000/' } })}>logout</Button>
+                                <Button color="inherit" onClick={async () => await auth0?.logout({ logutParams: { returnTo: `${process.env.REACT_APP_RETURN_TO}` } })}>logout</Button>
                             )}
                         </Toolbar>
                     </AppBar>
                     <Outlet auth0={ auth0 } />
                     </div>
-                </Auth0ProviderSecondaryAccount>
 
         );
     }
@@ -163,13 +141,13 @@ export default function NavBar() {
                         <Button color="inherit" onClick={async () => {
                             await auth0?.loginWithRedirect({
                                 authorizationParams: {
-                                    redirect_uri: 'http://localhost:3000/'
+                                    redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}`
                                 }
                             })
                         }}>Log in</Button>
                     )}
                     {isAuthenticated && (
-                        <Button color="inherit" onClick={async () => await auth0?.logout({ logutParams: { returnTo: 'http://127.0.0.1:3000/' } })}>logout</Button>
+                        <Button color="inherit" onClick={async () => await auth0?.logout({ logutParams: { returnTo: `${process.env.REACT_APP_RETURN_TO}` } })}>logout</Button>
                     )}
                     </Box>
                 </Box>
