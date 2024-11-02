@@ -44,7 +44,10 @@ export default function LinkedAccounts() {
             async function getConnections()
             {
                 let accessToken = await auth0.getAccessTokenSilently();
-                let connectionData = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                let connectionData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                    {
+                        profileID: auth0.user.sub
+                    },
                     {
                         withCredentials: true,
                         headers:
@@ -56,47 +59,44 @@ export default function LinkedAccounts() {
 
                 setConnections(connectionData.data)
                 setLoadingForPage(true)
-    console.log(connections)
-
-
-                
             }
 
             getConnections()
     }, [])
 
-
-    async function CallAuthorization()
+    //link
+    async function CallAuthorization(connectionName)
     {
 
         const accessToken = await auth0.getAccessTokenSilently();
-        const id = await auth0.getIdTokenClaims();
 
-        
+        if (!auth0.isAuthenticated)
+            return
+
         await SecondaryAccount.loginWithPopup(
             {
                 authorizationParams: {
-                    connection: 'cigna',
+                    connection: connectionName,
                     redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`
 
                 }
 
             }
-        )
+        ).then((response) => {
+            console.log(response)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 
         let cignaid = await SecondaryAccount.getIdTokenClaims()
         let auth0Id = await auth0.getIdTokenClaims()
-
-        let authData = 
-        {
-
-        }
 
         let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/userAuth0Info`,
             {
                  
                     PrimaryAccountID: auth0Id?.sub,
-                    PrimaryAccessToken: await auth0.getAccessTokenSilently(),
+                    PrimaryAccessToken: accessToken,
                     SecondaryAccountID: cignaid?.sub
             },
             {
@@ -109,6 +109,48 @@ export default function LinkedAccounts() {
         )
             .then((response) =>
             {
+                return (response);
+            })
+            .catch((err) =>
+            {
+                console.log(err)
+                return err
+            })
+    }
+
+    //unlink
+
+    async function CallUnLink(connectionName)
+    {
+        console.log("here")
+        let cignaid = await SecondaryAccount.getIdTokenClaims()
+
+        let auth0Id = await auth0.getIdTokenClaims()
+        console.log("here2")
+
+        let accessToken = await auth0.getAccessTokenSilently();
+
+        if (!auth0.isAuthenticated)
+            return
+
+        let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/Profile/UnlinkAccount`,
+            {
+                 
+                    PrimaryAccountID: auth0Id?.sub,
+                    PrimaryAccessToken: await auth0.getAccessTokenSilently(),
+                    ConnectionName: connectionName
+            },
+            {
+                withCredentials: true,
+                headers:
+                {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        )
+            .then((response) =>
+            {
+                console.log(response)
                 return (response);
             })
             .catch((err) =>
@@ -134,13 +176,19 @@ export default function LinkedAccounts() {
                         </Box>
                     </Box>
                     { connections.map((connection) => 
-                    <Box sx={{display:"flex", justifyContent:"space-between", width:"100%"}}>
-                        <Box sx={{width:"25%" , p:"1%"}}>{connection.name}</Box>
-                        <Box sx={{width:"25%", p:"1%"}}>https://aetna.com</Box>
-                        <Box sx={{width:"25%", p:"1%"}}>Aetna</Box>
-                        <Button sx={{ p:"1%",width:"27%", display:"flex", textAlign:"start", color:theme.palette.success.light, justifyContent:"end" }} onClick={CallAuthorization}>
+                    <Box sx={{display:"flex", justifyContent:"space-between", width:"100%"}} key={connection.connectionID}>
+                        <Box sx={{width:"25%" , p:"1%"}}>{connection.connectionName}</Box>
+                        <Box sx={{width:"25%", p:"1%"}}>{connection.name}</Box>
+                        <Box sx={{width:"25%", p:"1%"}}>{connection.name}</Box>
+                        { !connection.isLinked ?
+                        <Button sx={{ p:"1%",width:"27%", display:"flex", textAlign:"start", color:theme.palette.success.light, justifyContent:"end" }} onClick={() => {CallAuthorization(connection.connectionName)}}>
                             <Box sx={{width:"60%", textAlign:"start", p:"0%"}}>Link</Box>        
                         </Button>
+                        :
+                        <Button sx={{ p:"1%",width:"27%", display:"flex", textAlign:"start", color:theme.palette.success.light, justifyContent:"end" }} onClick={() => {CallUnLink(connection.connectionName)}}>
+                            <Box sx={{width:"60%", textAlign:"start", p:"0%"}}>UnLink</Box>        
+                        </Button>
+                        }
                     </Box>                                
                       )}
                 </Grid>                                

@@ -9,10 +9,11 @@ export const ProfileAction =
         let authenticated = auth0.isAuthenticated;
         let username = null
         formData["username"] = username ? username : ""
+        formData["user"] = user.sub;
         console.log(formData)
         if (authenticated && user)
         {
-            let data = await axios.post(`${process.env.REACT_APP_IDENTITY_BACKEND}/api/profile/updateProfileInfo`,
+            let data = await axios.post(`${process.env.REACT_APP_IDENTITY_BACKEND_URL}/api/profile/updateProfileInfo`,
 
                 formData
                 ,

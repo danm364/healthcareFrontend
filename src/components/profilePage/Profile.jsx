@@ -34,7 +34,6 @@ export default function Profile() {
     let load = navigation.state === "loading"
 
     let data = useLoaderData()
-    console.log(data)
 
     //data
     const [userInfo, setUserInfo] = useState({})
@@ -75,11 +74,13 @@ export default function Profile() {
                 })
             }
 
-
-
             setUseEffectLoading(false)
         }
-        returnInfo()
+
+        if (auth0.isAuthenticated)
+        {
+            returnInfo()
+        }
 
     }, [auth0, isAuthenticated])
 

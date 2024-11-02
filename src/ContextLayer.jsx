@@ -17,7 +17,6 @@ const Auth0ProviderSecondaryAccount = ({children, ...props}) =>
     }
     const linkProviderConfig = {
         clientId:`${process.env.REACT_APP_AUTH_CLIENT_ID}`,
-        connection:"aetna",
         domain:`${process.env.REACT_APP_AUTH_DOMAIN}`,
         context: linkContext,
         authorizationParams:
@@ -29,7 +28,6 @@ const Auth0ProviderSecondaryAccount = ({children, ...props}) =>
     };
 
 
-      console.log(process.env.REACT_APP_AUTH_DOMAIN)
 
     const primaryProvider =
     {
