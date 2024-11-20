@@ -64,7 +64,7 @@ export default function LinkedAccounts() {
             getConnections()
     }, [])
 
-    //link
+    //link accounts
     async function CallAuthorization(connectionName)
     {
 
@@ -87,10 +87,16 @@ export default function LinkedAccounts() {
         })
         .catch((err) => {
             console.log(err)
+            return
         })
 
         let cignaid = await SecondaryAccount.getIdTokenClaims()
         let auth0Id = await auth0.getIdTokenClaims()
+
+        if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined)
+        {
+            return;
+        }
 
         let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/userAuth0Info`,
             {
@@ -116,17 +122,71 @@ export default function LinkedAccounts() {
                 console.log(err)
                 return err
             })
+
+
+        // load data into our database and system
+
+        //first identification data should be loaded
+
+        let loadData = await axios.post(`${process.env.REACT_APP_IDENTITY_BACKEND}/api/User/LoadProfile`,
+            {
+                 
+                    PrimaryAccountID: auth0Id?.sub,
+                    PrimaryAccessToken: accessToken,
+                    ConnectionName: connectionName
+            },
+            {
+                withCredentials: true,
+                headers:
+                {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        )
+            .then((response) =>
+            {
+                return (response);
+            })
+            .catch((err) =>
+            {
+                console.log(err)
+                return err
+            })
+
+
+            let loadUserData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/User/LoadUserProfile`,
+                {
+                     
+                        PrimaryAccountID: auth0Id?.sub,
+                        PrimaryAccessToken: accessToken,
+                        ConnectionName: connectionName
+                },
+                {
+                    withCredentials: true,
+                    headers:
+                    {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            )
+                .then((response) =>
+                {
+                    return (response);
+                })
+                .catch((err) =>
+                {
+                    console.log(err)
+                    return err
+                })
     }
 
     //unlink
 
     async function CallUnLink(connectionName)
     {
-        console.log("here")
         let cignaid = await SecondaryAccount.getIdTokenClaims()
 
         let auth0Id = await auth0.getIdTokenClaims()
-        console.log("here2")
 
         let accessToken = await auth0.getAccessTokenSilently();
 
