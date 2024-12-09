@@ -15,13 +15,14 @@ import { useLoaderData, Form, Navigate, useNavigate } from "react-router-dom";
 //icons
 
 //loaders and actions
+import { ProfileLoader } from "../../loaders/ProfileLoader";
 
 //utilites
 import {linkContext} from "../../utilities/LinkContext"
 
 //pages
 
-export default function LinkedAccounts() {
+export default function LinkedAccounts({setUserInfo}) {
 
     let data = useLoaderData()
     let [connections, setConnections] = useState({})
@@ -93,11 +94,12 @@ export default function LinkedAccounts() {
         let cignaid = await SecondaryAccount.getIdTokenClaims()
         let auth0Id = await auth0.getIdTokenClaims()
 
-        if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined)
+        if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined || (cignaid.sub == auth0Id.sub))
         {
             return;
         }
 
+        //where link occurs
         let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/userAuth0Info`,
             {
                  
@@ -122,38 +124,9 @@ export default function LinkedAccounts() {
                 console.log(err)
                 return err
             })
+            
 
-
-        // load data into our database and system
-
-        //first identification data should be loaded
-
-        let loadData = await axios.post(`${process.env.REACT_APP_IDENTITY_BACKEND}/api/User/LoadProfile`,
-            {
-                 
-                    PrimaryAccountID: auth0Id?.sub,
-                    PrimaryAccessToken: accessToken,
-                    ConnectionName: connectionName
-            },
-            {
-                withCredentials: true,
-                headers:
-                {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            }
-        )
-            .then((response) =>
-            {
-                return (response);
-            })
-            .catch((err) =>
-            {
-                console.log(err)
-                return err
-            })
-
-
+            //loads user data from insurance company
             let loadUserData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/User/LoadUserProfile`,
                 {
                      
@@ -178,6 +151,65 @@ export default function LinkedAccounts() {
                     console.log(err)
                     return err
                 })
+                
+
+                //loads patients individual data that needs to be anonymized
+                let loadData = await axios.post(`${process.env.REACT_APP_IDENTITY_BACKEND}/api/User/LoadProfile`,
+                    {
+                         
+                            PrimaryAccountID: auth0Id?.sub,
+                            PrimaryAccessToken: accessToken,
+                            ConnectionName: connectionName
+                    },
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+                    .then((response) =>
+                    {
+                        return (response);
+                    })
+                    .catch((err) =>
+                    {
+                        console.log(err)
+                        return err
+                    })
+
+                let profileInfo = await ProfileLoader.loadProfileInfo(accessToken, auth0Id?.sub)
+                profileInfo = profileInfo.data
+                setUserInfo({
+                    firstName: profileInfo?.firstName ? profileInfo.firstName : "",
+                    lastName: profileInfo?.lastName ? profileInfo.lastName : "",
+                    address: profileInfo?.address ? profileInfo.address : "",
+                    apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
+                    email: profileInfo?.email ? profileInfo.email : ""
+                })
+            
+            async function getConnections()
+            {
+                let accessToken = await auth0.getAccessTokenSilently();
+                let connectionData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                    {
+                        profileID: auth0.user.sub
+                    },
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+
+                setConnections(connectionData.data)
+                setLoadingForPage(true)
+            }
+            getConnections()
+
     }
 
     //unlink
@@ -218,6 +250,30 @@ export default function LinkedAccounts() {
                 console.log(err)
                 return err
             })
+
+            async function getConnections()
+            {
+                let accessToken = await auth0.getAccessTokenSilently();
+                let connectionData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                    {
+                        profileID: auth0.user.sub
+                    },
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+
+                setConnections(connectionData.data)
+                setLoadingForPage(true)
+            }
+
+            getConnections()
+
+        console.log(connections)
     }
 
     return (
