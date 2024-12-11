@@ -22,7 +22,7 @@ import {linkContext} from "../../utilities/LinkContext"
 
 //pages
 
-export default function LinkedAccounts({setUserInfo}) {
+export default function LinkedAccounts({setUserInfo, userInfo}) {
 
     let data = useLoaderData()
     let [connections, setConnections] = useState({})
@@ -94,7 +94,8 @@ export default function LinkedAccounts({setUserInfo}) {
         let cignaid = await SecondaryAccount.getIdTokenClaims()
         let auth0Id = await auth0.getIdTokenClaims()
 
-        if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined || (cignaid.sub == auth0Id.sub))
+
+        if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined || (cignaid.sub == auth0Id.sub) || !(cignaid.sub.includes(connectionName)))
         {
             return;
         }
@@ -182,6 +183,7 @@ export default function LinkedAccounts({setUserInfo}) {
                 let profileInfo = await ProfileLoader.loadProfileInfo(accessToken, auth0Id?.sub)
                 profileInfo = profileInfo.data
                 setUserInfo({
+                    ...userInfo,
                     firstName: profileInfo?.firstName ? profileInfo.firstName : "",
                     lastName: profileInfo?.lastName ? profileInfo.lastName : "",
                     address: profileInfo?.address ? profileInfo.address : "",

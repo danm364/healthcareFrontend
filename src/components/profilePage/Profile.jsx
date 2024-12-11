@@ -225,7 +225,7 @@ export default function Profile() {
                             </Grid>
                     </Grid>
                     <Box sx={{color:theme.palette.grey[400]}} component="h1">Linked Accounts:</Box>
-                    <LinkedAccounts setUserInfo={setUserInfo} />
+                    <LinkedAccounts setUserInfo={setUserInfo} userInfo = {userInfo} />
                 </Box>                                  
             </ Container>
         )
