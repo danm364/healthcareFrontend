@@ -93,7 +93,11 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
 
         let cignaid = await SecondaryAccount.getIdTokenClaims()
         let auth0Id = await auth0.getIdTokenClaims()
-
+        
+        if (!(cignaid.sub.includes(connectionName)))
+        {
+            console.log(`This ${connectionName} login is already in use, please login with your previously created account.`)
+        }
 
         if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined || (cignaid.sub == auth0Id.sub) || !(cignaid.sub.includes(connectionName)))
         {
