@@ -74,11 +74,13 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
         if (!auth0.isAuthenticated)
             return
 
+
         await SecondaryAccount.loginWithPopup(
             {
                 authorizationParams: {
                     connection: connectionName,
-                    redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`
+                    redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`,
+                    ConnectionName: `${connectionName}`
 
                 }
 
@@ -94,7 +96,7 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
         let cignaid = await SecondaryAccount.getIdTokenClaims()
         let auth0Id = await auth0.getIdTokenClaims()
         
-        if (!(cignaid.sub.includes(connectionName)))
+        if (cignaid !== undefined && !(cignaid.sub?.includes(connectionName)))
         {
             console.log(`This ${connectionName} login is already in use, please login with your previously created account.`)
         }
