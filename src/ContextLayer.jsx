@@ -39,7 +39,7 @@ const Auth0ProviderSecondaryAccount = ({children, ...props}) =>
         {
             audience: `${process.env.REACT_APP_AUTH_AUDIENCE}`,
             redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}?primary`,
-            scope: "openid+profile+email"
+            scope: "openid+profile+email",
         },
         skipRedirectCallback: window.location.href.includes('?secondary'),
     }
@@ -47,15 +47,10 @@ const Auth0ProviderSecondaryAccount = ({children, ...props}) =>
 
 export default function ContextLayer()
 {
-    console.log(useAuth0())
-    console.log(useAuth0(linkContext))
-
-
-
     return (
         <Auth0ProviderSecondaryAccount  {...linkProviderConfig}>
 
-        <Auth0ProviderSecondaryAccount  {...primaryProvider}>
+            <Auth0ProviderSecondaryAccount  {...primaryProvider}>
                 <NavBar />
             </Auth0ProviderSecondaryAccount>            
         </Auth0ProviderSecondaryAccount>

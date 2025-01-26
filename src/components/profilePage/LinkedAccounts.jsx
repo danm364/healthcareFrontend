@@ -22,7 +22,7 @@ import {linkContext} from "../../utilities/LinkContext"
 
 //pages
 
-export default function LinkedAccounts({setUserInfo, userInfo}) {
+export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, setDisplayError}) {
 
     let data = useLoaderData()
     let [connections, setConnections] = useState({})
@@ -38,8 +38,8 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
     //theme
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('tablet'));
-
     let SecondaryAccount = useAuth0(linkContext);
+
 
     useEffect(() => {
             async function getConnections()
@@ -69,18 +69,25 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
     async function CallAuthorization(connectionName)
     {
 
+
         const accessToken = await auth0.getAccessTokenSilently();
 
         if (!auth0.isAuthenticated)
             return
 
+        let auth0Id = await auth0.getIdTokenClaims()
 
         await SecondaryAccount.loginWithPopup(
             {
+                max_age:0,
+                scope:'openid',
                 authorizationParams: {
                     connection: connectionName,
                     redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`,
-                    ConnectionName: `${connectionName}`
+                    ConnectionName: `${connectionName}`,
+                    PrimaryAccount: auth0Id.sub,
+                    PrimaryToken: accessToken,
+                    Link: true
 
                 }
 
@@ -92,9 +99,10 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
             console.log(err)
             return
         })
+        let cignaid = undefined;
 
-        let cignaid = await SecondaryAccount.getIdTokenClaims()
-        let auth0Id = await auth0.getIdTokenClaims()
+            cignaid = await SecondaryAccount.getIdTokenClaims()
+
         
         if (cignaid !== undefined && !(cignaid.sub?.includes(connectionName)))
         {
@@ -103,6 +111,8 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
 
         if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined || (cignaid.sub == auth0Id.sub) || !(cignaid.sub.includes(connectionName)))
         {
+            setErrorMessage("Account linking failed, please retry or contact customer support.");
+            setDisplayError(true)
             return;
         }
 
@@ -224,7 +234,6 @@ export default function LinkedAccounts({setUserInfo, userInfo}) {
 
     async function CallUnLink(connectionName)
     {
-        let cignaid = await SecondaryAccount.getIdTokenClaims()
 
         let auth0Id = await auth0.getIdTokenClaims()
 

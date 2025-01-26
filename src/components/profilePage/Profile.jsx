@@ -11,6 +11,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useLoaderData, Form, Navigate, useNavigate } from "react-router-dom";
 
+//error messages
+import ErrorMessage from '../errorPages/ProfileErrorPage'
+
 //icons
 import LocationOnTwoToneIcon from '@mui/icons-material/LocationOnTwoTone';
 import MessageIcon from '@mui/icons-material/Message';
@@ -33,7 +36,6 @@ export default function Profile() {
     const navigation = useNavigate();
     let load = navigation.state === "loading"
 
-    let data = useLoaderData()
 
     //data
     const [userInfo, setUserInfo] = useState({})
@@ -43,6 +45,8 @@ export default function Profile() {
     //display
     const [disableSubmitAndTextbox, toggleDisableSubmitAndTextbox] = useState(true)
     const [setUploadDisplay, uploadDisplay] = useState("none")
+    const [errorMessage, setErrorMessage] = useState("")
+    const [displayError, setDisplayError] = useState(false)
 
     //auth0
     const auth0 = useAuth0();
@@ -134,6 +138,9 @@ export default function Profile() {
         isAuthenticated && (
             <Container maxwidth="sm" sx={{ height: 800, mt: 5, display:"flex", flexDirection:"column",  alignItems:"center"}} >
                 <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                    {displayError && (
+                    <ErrorMessage errorMessage={errorMessage}/>
+                    )}
                     <Grid container sx={{ plr: 2,  justifyContent: 'center', columnGap: 5, width:"100%", flexDirection:"row" }}>
                             <Grid item direction="row" spacing={4} sx={{display:"flex", justifyContent: "center"} }>
                                 <Form method="post" action="/profile">
@@ -225,7 +232,7 @@ export default function Profile() {
                             </Grid>
                     </Grid>
                     <Box sx={{color:theme.palette.grey[400]}} component="h1">Linked Accounts:</Box>
-                    <LinkedAccounts setUserInfo={setUserInfo} userInfo = {userInfo} />
+                    <LinkedAccounts setUserInfo={setUserInfo} userInfo = {userInfo} setErrorMessage={setErrorMessage} setDisplayError={setDisplayError}/>
                 </Box>                                  
             </ Container>
         )
