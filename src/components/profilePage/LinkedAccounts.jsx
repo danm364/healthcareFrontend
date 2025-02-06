@@ -22,7 +22,7 @@ import {linkContext} from "../../utilities/LinkContext"
 
 //pages
 
-export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, setDisplayError}) {
+export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, setDisplayError, toggleDisableSubmitAndTextbox, disableSubmitAndTextbox, setUseEffectLoading, UseEffectLoading}) {
 
     let data = useLoaderData()
     let [connections, setConnections] = useState({})
@@ -116,6 +116,7 @@ export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, 
             return;
         }
 
+        setUseEffectLoading(true)
         //where link occurs
         let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/userAuth0Info`,
             {
@@ -198,15 +199,24 @@ export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, 
 
                 let profileInfo = await ProfileLoader.loadProfileInfo(accessToken, auth0Id?.sub)
                 profileInfo = profileInfo.data
-                setUserInfo({
-                    ...userInfo,
-                    firstName: profileInfo?.firstName ? profileInfo.firstName : "",
-                    lastName: profileInfo?.lastName ? profileInfo.lastName : "",
-                    address: profileInfo?.address ? profileInfo.address : "",
-                    apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
-                    email: profileInfo?.email ? profileInfo.email : ""
-                })
-            
+                toggleDisableSubmitAndTextbox(false)
+
+                setTimeout(()=> {
+                    setUserInfo({
+                        ...userInfo,
+                        firstName: profileInfo?.firstName ? profileInfo.firstName : "",
+                        lastName: profileInfo?.lastName ? profileInfo.lastName : "",
+                        address: profileInfo?.address ? profileInfo.address : "",
+                        apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
+                        email: profileInfo?.email ? profileInfo.email : ""
+                    })
+                },50)
+
+
+                setTimeout(() => {
+                    toggleDisableSubmitAndTextbox(true)
+                },120)
+                
             async function getConnections()
             {
                 let accessToken = await auth0.getAccessTokenSilently();
@@ -227,6 +237,9 @@ export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, 
                 setLoadingForPage(true)
             }
             getConnections()
+
+        setUseEffectLoading(false)
+
 
     }
 

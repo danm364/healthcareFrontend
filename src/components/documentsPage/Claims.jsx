@@ -11,7 +11,7 @@ import {
 
 //React
 import { useNavigate, useLoaderData, Form } from "react-router-dom";
-import { useState, React } from 'react';
+import { useState, useEffect, React } from 'react';
 
 //icons
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -19,8 +19,9 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import LoadingPage from "../loadingPage/LoadingPage";
 import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
+import { ClaimsLoader } from "../../loaders/GetClaims";
 
-export default function Profile() {
+export default function Claims() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
 
     //auth0
@@ -31,6 +32,21 @@ export default function Profile() {
     const navigation = useNavigate();
 
     let loading = navigation.state === "loading"
+
+    useEffect(() =>{
+        async function returnInfo()
+        {
+            let token = await auth0?.getAccessTokenSilently()
+            let user = await auth0?.user?.sub;
+
+            if (user && token && isAuthenticated)
+            {
+                let claimsInfo = await ClaimsLoader.GetClaims(token, user)
+                claimsInfo = claimsInfo.data
+
+            }
+        }
+    }, [] )
 
     if (auth0.isLoading || loading)
     {

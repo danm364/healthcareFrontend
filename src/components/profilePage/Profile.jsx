@@ -232,7 +232,10 @@ export default function Profile() {
                             </Grid>
                     </Grid>
                     <Box sx={{color:theme.palette.grey[400]}} component="h1">Linked Accounts:</Box>
-                    <LinkedAccounts setUserInfo={setUserInfo} userInfo = {userInfo} setErrorMessage={setErrorMessage} setDisplayError={setDisplayError}/>
+                    <LinkedAccounts setUserInfo={setUserInfo} userInfo = {userInfo} setErrorMessage={setErrorMessage} setDisplayError={setDisplayError} 
+                                    disableSubmitAndTextbox={disableSubmitAndTextbox} toggleDisableSubmitAndTextbox={toggleDisableSubmitAndTextbox}
+                                    setUseEffectLoading={setUseEffectLoading} useEffectLoading={useEffectLoading}
+                    />
                 </Box>                                  
             </ Container>
         )

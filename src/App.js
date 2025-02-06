@@ -2,7 +2,7 @@ import React from 'react';
 import './index.css';
 import Profile from './components/profilePage/Profile';
 import LandingPage from './components/landingpage/LandingPage';
-import DocumentsPage from './components/documentsPage/Documents';
+import ClaimsPage from './components/documentsPage/Claims';
 import ErrorPage from './error-pages/error-page';
 import {
     RouterProvider,
@@ -44,7 +44,7 @@ export const router = createBrowserRouter(
                     >
 
                     </Route>
-                    <Route path="/documents" element={<DocumentsPage />} errorElement={<ErrorPage />} ></Route>
+                    <Route path="/claims" element={<ClaimsPage />} errorElement={<ErrorPage />} ></Route>
                     <Route path="/home" element={<NewLandingPage />} errorElement={<ErrorPage />} ></Route>
                     <Route path="/about" element={ <ErrorPage />}></Route>
                     <Route path="/login" element = { <Link to = {{pathname : process.env.REACT_APP_AUTHORIZE_ENDPOINT}} />}/>

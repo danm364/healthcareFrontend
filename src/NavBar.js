@@ -76,7 +76,7 @@ export default function NavBar() {
                                             <Link to="/profile">Profile</Link>
                                         </MenuItem>
                                         <MenuItem onClick={handleClose} underline="none">
-                                            <Link to="/documents">Documents</Link>
+                                            <Link to="/claims">Claims</Link>
                                         </MenuItem>
                                     </Box>
 
@@ -126,7 +126,7 @@ export default function NavBar() {
                         {isAuthenticated && (
                         <Box >
                             <Button color="inherit" onClick={() => navigation("profile")}>Profile</Button>
-                            <Button color="inherit" onClick={() => navigation("documents")} >Documents</Button>
+                            <Button color="inherit" onClick={() => navigation("claims")} >Claims</Button>
                         </Box>
                         )
                         }
