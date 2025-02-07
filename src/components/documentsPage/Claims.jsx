@@ -46,6 +46,8 @@ export default function Claims() {
 
             }
         }
+
+        returnInfo()
     }, [] )
 
     if (auth0.isLoading || loading)
