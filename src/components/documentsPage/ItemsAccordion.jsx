@@ -21,27 +21,32 @@ import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
 import { ClaimsLoader } from "../../loaders/GetClaims";
 
-export default function ItemsAccordion() {
+import AjudicationItemsAccordion from "./AjudicationItemsAccordion";
+
+export default function ItemsAccordion({items, setItems, adjudicationItems, setAdjudicationItems, explanationOfBenefitIdentifier}) {
     const theme = useTheme();
 
     return (
             <Box sx={{display:"block"}}>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ArrowDropDownIcon />}
-                        aria-controls="panel1-content"
-                        id="panel1-header"
-                    >
-                        <Typography>year</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{ display: "block", justifyContent: "space-between", borderBottom: `1px solid ${theme.palette.primary.main}` }}>
-                        <Box sx={ { width: "100%"} }>
-                            <Typography>Billing Period: </Typography>
-                            <Typography>Type: </Typography>
-                            <Typography>Outcome: </Typography>
-                        </Box>
-                    </AccordionDetails>
-                </Accordion>
+                { items.filter((a) => a.ExplanationOfBenefitIdentifier == explanationOfBenefitIdentifier).map(item => (
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ArrowDropDownIcon />}
+                            aria-controls="panel1-content"
+                            id="panel1-header"
+                        >
+                            <Typography>Item</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ display: "block", justifyContent: "space-between", borderBottom: `1px solid ${theme.palette.primary.main}` }}>
+                            <Box sx={ { width: "100%"} }>
+                                <Typography>Item: {item.ProductDisplay} </Typography>
+                                <Typography>Location: {item.LocationDisplay}</Typography>
+                                <Typography>Item Value: {item.ItemValue}</Typography>
+                            </Box>
+                            <AjudicationItemsAccordion adjudicationItems={adjudicationItems} explanationOfBenefitIdentifier={explanationOfBenefitIdentifier} itemID={item.ItemID}/>
+                        </AccordionDetails>
+                    </Accordion>
+                ))}
             </ Box>
     );
 };

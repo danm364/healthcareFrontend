@@ -22,6 +22,7 @@ import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 import { ClaimsLoader } from "../../loaders/GetClaims";
 
 import ItemsAccordion from "./ItemsAccordion"
+import AjudicationItemsAccordion from "./AjudicationItemsAccordion";
 
 export default function Claims() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
@@ -35,7 +36,7 @@ export default function Claims() {
 
     const [explanationOfBenefits, setExplanationOfBenefits] = useState([{}])
     const [items, setItems] = useState([{}])
-    const [adjudicationItems, setAjudicationItems] = useState([{}])
+    const [adjudicationItems, setAdjudicationItems] = useState([{}])
     const [useEffectLoading, setUseEffectLoading] = useState(true)
     const [yearList, setYearList] = useState([])
     
@@ -56,7 +57,7 @@ export default function Claims() {
 
                 setExplanationOfBenefits(claimsInfo["E"]);
                 setItems(claimsInfo["I"]);
-                setAjudicationItems(claimsInfo["A"]);
+                setAdjudicationItems(claimsInfo["A"]);
 
                 let listOfYears = [];
 
@@ -113,7 +114,9 @@ export default function Claims() {
                                                     <Typography>Type: {item.ExplanationOfBenefitUse}</Typography>
                                                     <Typography>Outcome: {item.Outcome}</Typography>
                                                 </Box>
-                                                <ItemsAccordion />
+                                                <ItemsAccordion items={items} setItems={setItems} adjudicationItems={adjudicationItems} setAdjudicationItems={setAdjudicationItems}
+                                                                explanationOfBenefitIdentifier={item.Identifier}                
+                                                />
                                             </AccordionDetails>
                                         ))}
                             </Accordion>
@@ -121,9 +124,6 @@ export default function Claims() {
                         :
                         <div></div>
                     }
-
-
-
             </ Container>
         )
     );
