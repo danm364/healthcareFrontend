@@ -34,7 +34,7 @@ export default function AjudicationItemsAccordion({adjudicationItems, explanatio
                     >
                         <Typography>Ajudication Items</Typography>
                     </AccordionSummary>
-                { adjudicationItems.filter((a) => ((a.ExplanationOfbenefitIdentifier == explanationOfBenefitIdentifier) && (a.ItemID == itemID))).map(item => (
+                { adjudicationItems.filter((a) => ((a.ExplanationOfBenefitIdentifier == explanationOfBenefitIdentifier) && (a.ItemID == itemID))).map(item => (
 
                     <AccordionDetails sx={{ display: "block", justifyContent: "space-between", borderBottom: `1px solid ${theme.palette.primary.main}` }}>
                         <Box sx={ { width: "100%"} }>
