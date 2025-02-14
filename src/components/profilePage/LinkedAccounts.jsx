@@ -15,13 +15,14 @@ import { useLoaderData, Form, Navigate, useNavigate } from "react-router-dom";
 //icons
 
 //loaders and actions
+import { ProfileLoader } from "../../loaders/ProfileLoader";
 
 //utilites
 import {linkContext} from "../../utilities/LinkContext"
 
 //pages
 
-export default function LinkedAccounts() {
+export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, setDisplayError, toggleDisableSubmitAndTextbox, disableSubmitAndTextbox, setUseEffectLoading, UseEffectLoading}) {
 
     let data = useLoaderData()
     let [connections, setConnections] = useState({})
@@ -37,8 +38,8 @@ export default function LinkedAccounts() {
     //theme
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('tablet'));
-
     let SecondaryAccount = useAuth0(linkContext);
+
 
     useEffect(() => {
             async function getConnections()
@@ -64,20 +65,29 @@ export default function LinkedAccounts() {
             getConnections()
     }, [])
 
-    //link
+    //link accounts
     async function CallAuthorization(connectionName)
     {
+
 
         const accessToken = await auth0.getAccessTokenSilently();
 
         if (!auth0.isAuthenticated)
             return
 
+        let auth0Id = await auth0.getIdTokenClaims()
+
         await SecondaryAccount.loginWithPopup(
             {
+                max_age:0,
+                scope:'openid',
                 authorizationParams: {
                     connection: connectionName,
-                    redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`
+                    redirect_uri: `${process.env.REACT_APP_REDIRECT_URI}profile`,
+                    ConnectionName: `${connectionName}`,
+                    PrimaryAccount: auth0Id.sub,
+                    PrimaryToken: accessToken,
+                    Link: true
 
                 }
 
@@ -87,11 +97,27 @@ export default function LinkedAccounts() {
         })
         .catch((err) => {
             console.log(err)
+            return
         })
+        let cignaid = undefined;
 
-        let cignaid = await SecondaryAccount.getIdTokenClaims()
-        let auth0Id = await auth0.getIdTokenClaims()
+            cignaid = await SecondaryAccount.getIdTokenClaims()
 
+        
+        if (cignaid !== undefined && !(cignaid.sub?.includes(connectionName)))
+        {
+            console.log(`This ${connectionName} login is already in use, please login with your previously created account.`)
+        }
+
+        if (cignaid == null || cignaid == undefined || auth0Id == null || auth0Id == undefined || (cignaid.sub == auth0Id.sub) || !(cignaid.sub.includes(connectionName)))
+        {
+            setErrorMessage("Account linking failed, please retry or contact customer support.");
+            setDisplayError(true)
+            return;
+        }
+
+        setUseEffectLoading(true)
+        //where link occurs
         let data = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/userAuth0Info`,
             {
                  
@@ -116,17 +142,113 @@ export default function LinkedAccounts() {
                 console.log(err)
                 return err
             })
+            
+
+            //loads user data from insurance company
+            let loadUserData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/User/LoadUserProfile`,
+                {
+                     
+                        PrimaryAccountID: auth0Id?.sub,
+                        PrimaryAccessToken: accessToken,
+                        ConnectionName: connectionName
+                },
+                {
+                    withCredentials: true,
+                    headers:
+                    {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            )
+                .then((response) =>
+                {
+                    return (response);
+                })
+                .catch((err) =>
+                {
+                    console.log(err)
+                    return err
+                })
+                
+
+                //loads patients individual data that needs to be anonymized
+                let loadData = await axios.post(`${process.env.REACT_APP_IDENTITY_BACKEND}/api/User/LoadProfile`,
+                    {
+                         
+                            PrimaryAccountID: auth0Id?.sub,
+                            PrimaryAccessToken: accessToken,
+                            ConnectionName: connectionName
+                    },
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+                    .then((response) =>
+                    {
+                        return (response);
+                    })
+                    .catch((err) =>
+                    {
+                        console.log(err)
+                        return err
+                    })
+
+                let profileInfo = await ProfileLoader.loadProfileInfo(accessToken, auth0Id?.sub)
+                profileInfo = profileInfo.data
+                toggleDisableSubmitAndTextbox(false)
+
+                setTimeout(()=> {
+                    setUserInfo({
+                        ...userInfo,
+                        firstName: profileInfo?.firstName ? profileInfo.firstName : "",
+                        lastName: profileInfo?.lastName ? profileInfo.lastName : "",
+                        address: profileInfo?.address ? profileInfo.address : "",
+                        apartmentNumber: profileInfo?.apartmentNumber ? profileInfo.apartmentNumber : "",
+                        email: profileInfo?.email ? profileInfo.email : ""
+                    })
+                },50)
+
+
+                setTimeout(() => {
+                    toggleDisableSubmitAndTextbox(true)
+                },120)
+                
+            async function getConnections()
+            {
+                let accessToken = await auth0.getAccessTokenSilently();
+                let connectionData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                    {
+                        profileID: auth0.user.sub
+                    },
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+
+                setConnections(connectionData.data)
+                setLoadingForPage(true)
+            }
+            getConnections()
+
+        setUseEffectLoading(false)
+
+
     }
 
     //unlink
 
     async function CallUnLink(connectionName)
     {
-        console.log("here")
-        let cignaid = await SecondaryAccount.getIdTokenClaims()
 
         let auth0Id = await auth0.getIdTokenClaims()
-        console.log("here2")
 
         let accessToken = await auth0.getAccessTokenSilently();
 
@@ -158,6 +280,30 @@ export default function LinkedAccounts() {
                 console.log(err)
                 return err
             })
+
+            async function getConnections()
+            {
+                let accessToken = await auth0.getAccessTokenSilently();
+                let connectionData = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/profile/getConnections`,
+                    {
+                        profileID: auth0.user.sub
+                    },
+                    {
+                        withCredentials: true,
+                        headers:
+                        {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+
+                setConnections(connectionData.data)
+                setLoadingForPage(true)
+            }
+
+            getConnections()
+
+        console.log(connections)
     }
 
     return (
