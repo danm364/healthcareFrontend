@@ -63,7 +63,8 @@ export default function Claims() {
                 setAdjudicationItems(claimsInfo["A"]);
 
                 let listOfYears = [];
-
+                let rows = []
+                let explanationOfBenefitsKeys = Object.keys(claimsInfo["E"][0]);
                 claimsInfo["E"].forEach(element => {
                     let year = new Date(element?.BillablePeriodStart?.Value).getFullYear();
                     if (!listOfYears.includes(year))
@@ -74,6 +75,12 @@ export default function Claims() {
                     {
                         return;
                     }
+                });
+
+                claimsInfo["E"].forEach(element => {
+
+                    let newRow = {}
+
                 });
         
                 setYearList(listOfYears);
