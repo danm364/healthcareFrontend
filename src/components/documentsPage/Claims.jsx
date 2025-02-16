@@ -6,9 +6,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import {
     IconButton, Avatar, Box, Container, Grid, Rating, Button, ListItemText, List, ListItem,
     Typography, ButtonGroup, Divider, TextField, FormControl, useTheme, useMediaQuery,
-    AccordionSummary, AccordionDetails, Accordion
+    AccordionSummary, AccordionDetails, Accordion, Paper, Stack
 } from '@mui/material';
-
+import { DataGridPro, DataGridProProps, GridColDef } from '@mui/x-data-grid-pro';
 //React
 import { useNavigate, useLoaderData, Form } from "react-router-dom";
 import { useState, useEffect, React } from 'react';
@@ -22,7 +22,7 @@ import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 import { ClaimsLoader } from "../../loaders/GetClaims";
 
 import ItemsAccordion from "./ItemsAccordion"
-import AjudicationItemsAccordion from "./AjudicationItemsAccordion";
+import AjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 
 export default function Claims() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
@@ -39,6 +39,9 @@ export default function Claims() {
     const [adjudicationItems, setAdjudicationItems] = useState([{}])
     const [useEffectLoading, setUseEffectLoading] = useState(true)
     const [yearList, setYearList] = useState([])
+    const [dataDisplay, toggleDataDisplay] = useState(false)
+    const [columnNames, setColumnNames] = useState([])
+
     
 
 
@@ -91,11 +94,16 @@ export default function Claims() {
         return <LoadingPage />
     }
 
+
     return (
         isAuthenticated && (
             <Container maxwidth="sm" sx={{ height: 800, mt: 5, display: "flex", flexDirection: "column" }} >
+                    <Box>
+                        <Button onClick={() => toggleDataDisplay(true)}>Grid</Button>
+                        <Button onClick={() => toggleDataDisplay(false)}>Tree Hierarchy</Button>
+                    </Box>
                     { 
-                        (yearList != null) ? yearList.sort((a, b) => {
+                        ((yearList != null) & !dataDisplay) ? yearList.sort((a, b) => {
                             return b-a
                         }).map(year => (
                             <Accordion >
@@ -124,6 +132,19 @@ export default function Claims() {
                         :
                         <div></div>
                     }
+
+                    {
+                        ((yearList!=null) & dataDisplay) ? 
+                        (
+                            <DataGridPro>
+
+                            </DataGridPro>
+
+                        )
+                        :
+                        <div></div>
+                    }
+
             </ Container>
         )
     );

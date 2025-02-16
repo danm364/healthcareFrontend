@@ -2,6 +2,7 @@ import NavBar from "./NavBar"
 import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 import { linkContext } from './utilities/LinkContext';
+import { LicenseInfo } from '@mui/x-license';
 
 const Auth0ProviderSecondaryAccount = ({children, ...props}) => 
     {
@@ -47,9 +48,9 @@ const Auth0ProviderSecondaryAccount = ({children, ...props}) =>
 
 export default function ContextLayer()
 {
+    LicenseInfo.setLicenseKey("0cbca23832f758305a1e483fef019beaTz0xMDgwMDksRT0xNzcxMjg2Mzk5MDAwLFM9cHJvLExNPXN1YnNjcmlwdGlvbixQVj1RMy0yMDI0LEtWPTI=")
     return (
         <Auth0ProviderSecondaryAccount  {...linkProviderConfig}>
-
             <Auth0ProviderSecondaryAccount  {...primaryProvider}>
                 <NavBar />
             </Auth0ProviderSecondaryAccount>            

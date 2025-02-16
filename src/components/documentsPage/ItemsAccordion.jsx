@@ -21,7 +21,7 @@ import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
 import { ClaimsLoader } from "../../loaders/GetClaims";
 
-import AjudicationItemsAccordion from "./AjudicationItemsAccordion";
+import AdjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 
 export default function ItemsAccordion({items, setItems, adjudicationItems, setAdjudicationItems, explanationOfBenefitIdentifier}) {
     const theme = useTheme();
@@ -43,7 +43,7 @@ export default function ItemsAccordion({items, setItems, adjudicationItems, setA
                                 <Typography>Location: {item.LocationDisplay}</Typography>
                                 <Typography>Item Value: {item.ItemValue}</Typography>
                             </Box>
-                            <AjudicationItemsAccordion adjudicationItems={adjudicationItems} explanationOfBenefitIdentifier={explanationOfBenefitIdentifier} itemID={item.ItemID}/>
+                            <AdjudicationItemsAccordion adjudicationItems={adjudicationItems} explanationOfBenefitIdentifier={explanationOfBenefitIdentifier} itemID={item.ItemID}/>
                         </AccordionDetails>
                     </Accordion>
                 ))}

@@ -21,7 +21,7 @@ import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
 import { ClaimsLoader } from "../../loaders/GetClaims";
 
-export default function AjudicationItemsAccordion({adjudicationItems, explanationOfBenefitIdentifier, itemID}) {
+export default function AdjudicationItemsAccordion({adjudicationItems, explanationOfBenefitIdentifier, itemID}) {
     const theme = useTheme();
 
     return (
