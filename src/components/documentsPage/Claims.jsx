@@ -22,9 +22,21 @@ import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
 import { ClaimsLoader } from "../../loaders/GetClaims";
 
-import ItemsAccordion from "./ItemsAccordion"
+import ItemsAccordion from "./ItemsAccordion";
 import AjudicationItemsAccordion from "./AdjudicationItemsAccordion";
-import ChildGrid from "./ChildGrid"
+import ChildGrid from "./ChildGrid";
+import CacheParentGrid from "./CacheParentGrid"
+
+// function CacheParentGrid({childRows, childColumns, adjudicationItems}) {
+//     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
+
+//     const getDetailPanelContent = React.useCallback(
+//         ({ childRows, childColumns, adjudicationItems}) => <ChildGrid row={childRows} columns={childColumns} adjudicationItems={adjudicationItems} />,
+//         [childRows, childColumns, adjudicationItems],
+//       );
+
+//     return getDetailPanelContent
+// };
 
 export default function Claims() {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
@@ -49,11 +61,9 @@ export default function Claims() {
     const [childRows, setChildRows] = useState([])
     const [childColumns, setChildColumns] = useState([])
 
+
     const getDetailPanelHeight = React.useCallback(() => 400, [])
-    const getDetailPanelContent = React.useCallback(
-        ({ childRows, childColumns, adjudicationItems}) => <ChildGrid row={childRows} columns={childColumns} adjudicationItems={adjudicationItems} />,
-        [childRows, childColumns, adjudicationItems],
-      );
+
 
     let loading = navigation.state === "loading"
 
@@ -251,7 +261,7 @@ export default function Claims() {
                                 rows={parentRows}
                                 columns={parentColumns}
                                 getDetailPanelHeight={getDetailPanelHeight}
-                                getDetailPanelContent={getDetailPanelContent}
+                                getDetailPanelContent={<CacheParentGrid childRows={childRows} childColumns={childColumns} adjudicationItems={adjudicationItems} />}
                             >
 
                             </DataGridPro>

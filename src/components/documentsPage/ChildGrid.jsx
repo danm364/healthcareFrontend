@@ -27,6 +27,8 @@ import AdjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 export default function ItemsAccordion({rows, columns}) {
     const theme = useTheme();
 
+
+
     return (
         <DataGridPro
             rows={rows}
