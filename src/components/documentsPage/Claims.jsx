@@ -26,19 +26,10 @@ import ItemsAccordion from "./ItemsAccordion";
 import AjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 import ChildGrid from "./ChildGrid";
 import CacheParentGrid from "./CacheParentGrid"
+import ClaimsWrapperChild from "./ClaimsWrapperChild"
 
-// function CacheParentGrid({childRows, childColumns, adjudicationItems}) {
-//     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
-
-//     const getDetailPanelContent = React.useCallback(
-//         ({ childRows, childColumns, adjudicationItems}) => <ChildGrid row={childRows} columns={childColumns} adjudicationItems={adjudicationItems} />,
-//         [childRows, childColumns, adjudicationItems],
-//       );
-
-//     return getDetailPanelContent
-// };
-
-export default function Claims() {
+export default function ClaimsWrapper()
+{
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
 
     //auth0
@@ -47,6 +38,7 @@ export default function Claims() {
 
     const theme = useTheme();
     const navigation = useNavigate();
+    let loading = navigation.state === "loading"
 
 
     const [explanationOfBenefits, setExplanationOfBenefits] = useState([{}])
@@ -60,12 +52,6 @@ export default function Claims() {
     const [parentColumns, setParentColumns] = useState([])
     const [childRows, setChildRows] = useState([])
     const [childColumns, setChildColumns] = useState([])
-
-
-    const getDetailPanelHeight = React.useCallback(() => 400, [])
-
-
-    let loading = navigation.state === "loading"
 
     useEffect(() =>{
         async function returnInfo()
@@ -85,7 +71,6 @@ export default function Claims() {
                 let listOfYears = [];
                 let rows = []
                 let explanationOfBenefitsKeys = Object.keys(claimsInfo["E"][0]);
-                let itemKeys = Object.keys(claimsInfo["I"][0]);
 
                 claimsInfo["E"].forEach(element => {
                     let year = new Date(element?.BillablePeriodStart?.Value).getFullYear();
@@ -169,6 +154,12 @@ export default function Claims() {
                     gridParentRowProps.push(newRow);
                 });
 
+                let itemKeys = []
+
+                gridChildColumnProps.forEach(element => {
+                    itemKeys.push(element.field)
+                });
+
                 claimsInfo["I"].forEach(element => {
 
                     let newRow = {};
@@ -183,7 +174,7 @@ export default function Claims() {
                         else
                         {
                             newRow[key] = element[key]
-                            newRow["id"] = element["Identifier"]
+                            newRow["id"] = element["ItemID"]
                         }
 
                     })
@@ -196,7 +187,6 @@ export default function Claims() {
                 setParentRows(gridParentRowProps)
                 setChildRows(gridChildRowProps)
                 setChildColumns(gridChildColumnProps)
-
 
                 setUseEffectLoading(false)
 
@@ -214,64 +204,15 @@ export default function Claims() {
         return <LoadingPage />
     }
 
-
-
     return (
-        isAuthenticated && (
-            <Container maxwidth="sm" sx={{ height: 800, mt: 5, display: "flex", flexDirection: "column" }} >
-                    <Box>
-                        <Button onClick={() => toggleDataDisplay(true)}>Grid</Button>
-                        <Button onClick={() => toggleDataDisplay(false)}>Tree Hierarchy</Button>
-                    </Box>
-                    { 
-                        ((yearList != null) & !dataDisplay) ? yearList.sort((a, b) => {
-                            return b-a
-                        }).map(year => (
-                            <Accordion >
-                                        <AccordionSummary
-                                            expandIcon={<ArrowDropDownIcon />}
-                                            aria-controls="panel1-content"
-                                            id="panel1-header"
-                                        >
-                                            <Typography>{year}</Typography>
-                                        </AccordionSummary>
+        <ClaimsWrapperChild 
+            explanationOfBenefits={explanationOfBenefits} items={items} adjudicationItems={adjudicationItems} 
+            setItems={setItems} toggleDataDisplay={toggleDataDisplay} yearList={yearList} dataDisplay={dataDisplay} parentRows={parentRows} 
+            parentColumns={parentColumns} loading={loading} childRows={childRows} childColumns={childColumns} setChildColumns={setChildColumns} setChildRows={setChildRows}
+        />
+    )
+}
 
-                                        { explanationOfBenefits.filter((a) => new Date(a.BillablePeriodStart?.Value).getFullYear() == year).map(item => (
-                                            <AccordionDetails sx={{ display: "flex", justifyContent: "space-between", borderBottom: `1px solid ${theme.palette.primary.main}`, flexDirection: "column"}}>
-                                                <Box sx={ { width: "100%"} }>
-                                                    <Typography>Billing Period: {new Date(item.BillablePeriodStart?.Value).toLocaleDateString()} - {new Date(item.BillablePeriodEnd?.Value).toLocaleDateString()}</Typography>
-                                                    <Typography>Type: {item.ExplanationOfBenefitUse}</Typography>
-                                                    <Typography>Outcome: {item.Outcome}</Typography>
-                                                </Box>
-                                                <ItemsAccordion items={items} setItems={setItems} adjudicationItems={adjudicationItems} setAdjudicationItems={setAdjudicationItems}
-                                                                explanationOfBenefitIdentifier={item.Identifier}                
-                                                />
-                                            </AccordionDetails>
-                                        ))}
-                            </Accordion>
-                        )) 
-                        :
-                        <div></div>
-                    }
 
-                    {
-                        ((yearList!=null) & dataDisplay) ? 
-                        (
-                            <DataGridPro
-                                rows={parentRows}
-                                columns={parentColumns}
-                                getDetailPanelHeight={getDetailPanelHeight}
-                                getDetailPanelContent={<CacheParentGrid childRows={childRows} childColumns={childColumns} adjudicationItems={adjudicationItems} />}
-                            >
 
-                            </DataGridPro>
 
-                        )
-                        :
-                        <div></div>
-                    }
-
-            </ Container>
-        )
-    );
-};

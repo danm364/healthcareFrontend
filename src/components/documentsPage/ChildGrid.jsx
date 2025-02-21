@@ -24,15 +24,16 @@ import { ClaimsLoader } from "../../loaders/GetClaims";
 
 import AdjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 
-export default function ItemsAccordion({rows, columns}) {
+export default function ChildGrid({childRows, childColumns, adjudicationItems, row}) {
     const theme = useTheme();
+    let variable;
 
 
-
+            
     return (
         <DataGridPro
-            rows={rows}
-            columns={columns}
+            rows={childRows.filter((a) => a.ExplanationOfBenefitIdentifier === row.id)}
+            columns={childColumns}
         >
 
         </DataGridPro>

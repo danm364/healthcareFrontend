@@ -29,10 +29,6 @@ import ChildGrid from "./ChildGrid"
 export default function CacheParentGrid({childRows, childColumns, adjudicationItems}) {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
 
-    const getDetailPanelContent = React.useCallback(
-        ({ childRows, childColumns, adjudicationItems}) => <ChildGrid row={childRows} columns={childColumns} adjudicationItems={adjudicationItems} />,
-        [],
-        );
 
-    return getDetailPanelContent    
+
 };
