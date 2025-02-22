@@ -169,7 +169,6 @@ export default function ClaimsWrapper()
                         if (key === "ServicedStartDate" || key === "ServicedEndDate")
                         {
                             newRow[key] = new Date(element[key].Value);
-                            newRow["id"] = element["ItemQuantity"]
                         }
                         else
                         {

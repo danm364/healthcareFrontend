@@ -21,19 +21,27 @@ import LoadingPage from "../loadingPage/LoadingPage";
 import PdfExample from "./0012714837 - Certificate of Organization.pdf"
 
 import { ClaimsLoader } from "../../loaders/GetClaims";
-
+import DetailPanel from "./DetailPanel";
 import AdjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 
 export default function ChildGrid({childRows, childColumns, adjudicationItems, row}) {
     const theme = useTheme();
     let variable;
+    const getDetailPanelHeight = () => 400
 
+
+    // const getDetailPanelContent = React.useCallback(
+    //     (childRow) => <DetailPanel childRows={childRows}  row={childRow}/>,
+    //     [],
+    //     );
 
             
     return (
         <DataGridPro
             rows={childRows.filter((a) => a.ExplanationOfBenefitIdentifier === row.id)}
             columns={childColumns}
+            getDetailPanelHeight={getDetailPanelHeight}
+            getDetailPanelContent={<DetailPanel />}
         >
 
         </DataGridPro>
