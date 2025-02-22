@@ -24,24 +24,17 @@ import { ClaimsLoader } from "../../loaders/GetClaims";
 import DetailPanel from "./DetailPanel";
 import AdjudicationItemsAccordion from "./AdjudicationItemsAccordion";
 
-export default function ChildGrid({childRows, childColumns, adjudicationItems, row}) {
-    const theme = useTheme();
-    let variable;
+export default function ChildGrid({childRows, childColumns, adjudicationItems, row, detailPanelRows, detailPanelColumns}) {
+    
     const getDetailPanelHeight = () => 400
+    const getDetailPanelContent = (selectedRow) => <DetailPanel adjudicationItems={adjudicationItems} selectedRow={selectedRow} detailPanelColumns={detailPanelColumns} detailPanelRows={detailPanelRows}/>
 
-
-    // const getDetailPanelContent = React.useCallback(
-    //     (childRow) => <DetailPanel childRows={childRows}  row={childRow}/>,
-    //     [],
-    //     );
-
-            
     return (
         <DataGridPro
             rows={childRows.filter((a) => a.ExplanationOfBenefitIdentifier === row.id)}
             columns={childColumns}
             getDetailPanelHeight={getDetailPanelHeight}
-            getDetailPanelContent={<DetailPanel />}
+            getDetailPanelContent={getDetailPanelContent}
         >
 
         </DataGridPro>

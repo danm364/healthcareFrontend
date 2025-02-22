@@ -321,7 +321,7 @@ export default function LinkedAccounts({setUserInfo, userInfo, setErrorMessage, 
                             </Box>
                         </Box>
                     </Box>
-                    { connections.map((connection) => 
+                    { connections.$values.map((connection) => 
                     <Box sx={{display:"flex", justifyContent:"space-between", width:"100%"}} key={connection.connectionID}>
                         <Box sx={{width:"25%" , p:"1%"}}>{connection.connectionName}</Box>
                         <Box sx={{width:"25%", p:"1%"}}>{connection.name}</Box>

@@ -37,7 +37,10 @@ import CacheParentGrid from "./CacheParentGrid"
 
 //     return getDetailPanelContent
 // };
-export default function Claims({items, setItems, adjudicationItems, setAdjudicationItems, explanationOfBenefits, toggleDataDisplay, yearList, dataDisplay, parentRows, parentColumns, childRows, childColumns, setChildRows, setChildColumns}) {
+export default function Claims({items, setItems, adjudicationItems, setAdjudicationItems, explanationOfBenefits, toggleDataDisplay, yearList, 
+                                dataDisplay, parentRows, parentColumns, childRows, childColumns, setChildRows, setChildColumns,
+                                detailPanelRows, detailPanelColumns}) 
+{
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
 
     //auth0
@@ -50,9 +53,9 @@ export default function Claims({items, setItems, adjudicationItems, setAdjudicat
 
 
     const getDetailPanelContent = React.useCallback(
-        (row) => <ChildGrid childRows={childRows} childColumns={childColumns} adjudicationItems={adjudicationItems} row={row}/>,
-        [],
-        );
+        (row) => <ChildGrid childRows={childRows} childColumns={childColumns} adjudicationItems={adjudicationItems} 
+                            row={row} detailPanelRows={detailPanelRows} detailPanelColumns={detailPanelColumns}
+                />, [],);
 
     return (
         isAuthenticated && (

@@ -52,6 +52,9 @@ export default function ClaimsWrapper()
     const [parentColumns, setParentColumns] = useState([])
     const [childRows, setChildRows] = useState([])
     const [childColumns, setChildColumns] = useState([])
+    const [detailPanelColumns, setDetailPanelColumns] = useState([]);
+    const [detailPanelRows, setDetailPanelRows] = useState([]);
+
 
     useEffect(() =>{
         async function returnInfo()
@@ -128,10 +131,22 @@ export default function ClaimsWrapper()
 
                 ];
 
+                let detailPanelColumnProps = 
+                [
+                    {field: "ExplanationOfBenefitIdentifier", headerName: "Identifier", width:150},
+                    {field: "ItemID", headerName: "Item ID", width:150},
+                    {field: "AdjudicationItemID", headerName: "Item ID", width:150},
+                    {field: "CategoryDisplay", headerName: "Product", width:150},
+                    {field: "MoneyAmount", headerName: "Item Value", width:150},
+                    {field: "Currency", headerName: "Item Quantity", width:150}
+
+                ];
+                let detailPanelRowProps = []
+
                 let gridParentRowProps = [];
                 let gridChildRowProps = [];
 
-
+                //setup explanationofbenefits rowx
                 claimsInfo["E"].forEach(element => {
                     
                     let newRow = {};
@@ -154,6 +169,8 @@ export default function ClaimsWrapper()
                     gridParentRowProps.push(newRow);
                 });
 
+
+                //setup items row
                 let itemKeys = []
 
                 gridChildColumnProps.forEach(element => {
@@ -180,12 +197,35 @@ export default function ClaimsWrapper()
                     
                     gridChildRowProps.push(newRow);
                 })
-        
+
+                let adjudicationItemKeys = []
+                
+                detailPanelColumnProps.forEach(element => {
+                    adjudicationItemKeys.push(element.field)
+                })
+
+                claimsInfo["A"].forEach(element => {
+
+                    let newRow = {};
+
+                    adjudicationItemKeys.forEach(key => {
+
+                            newRow[key] = element[key]
+
+                    })
+                    newRow["id"] = element["AdjudicationItemID"]
+                    
+                    detailPanelRowProps.push(newRow);
+                })
+
                 setYearList(listOfYears);
                 setParentColumns(gridParentColumnProps)
                 setParentRows(gridParentRowProps)
                 setChildRows(gridChildRowProps)
                 setChildColumns(gridChildColumnProps)
+                setDetailPanelRows(detailPanelRowProps)
+                setDetailPanelColumns(detailPanelColumnProps)
+
 
                 setUseEffectLoading(false)
 
@@ -208,6 +248,7 @@ export default function ClaimsWrapper()
             explanationOfBenefits={explanationOfBenefits} items={items} adjudicationItems={adjudicationItems} 
             setItems={setItems} toggleDataDisplay={toggleDataDisplay} yearList={yearList} dataDisplay={dataDisplay} parentRows={parentRows} 
             parentColumns={parentColumns} loading={loading} childRows={childRows} childColumns={childColumns} setChildColumns={setChildColumns} setChildRows={setChildRows}
+            detailPanelRows={detailPanelRows} detailPanelColumns={detailPanelColumns}
         />
     )
 }

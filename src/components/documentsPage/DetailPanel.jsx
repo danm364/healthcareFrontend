@@ -37,7 +37,7 @@ import CacheParentGrid from "./CacheParentGrid"
 
 //     return getDetailPanelContent
 // };
-export default function DetailPanel({adjudicationItems}) {
+export default function DetailPanel({adjudicationItems, selectedRow, detailPanelRows, detailPanelColumns}) {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("mobile"));
 
 
@@ -70,22 +70,8 @@ export default function DetailPanel({adjudicationItems}) {
             </Grid>
             <DataGridPro
               density="compact"
-              columns={[
-                { field: 'name', headerName: 'Product', flex: 1 },
-                {
-                  field: 'quantity',
-                  headerName: 'Quantity',
-                  align: 'center',
-                  type: 'number',
-                },
-                { field: 'unitPrice', headerName: 'Unit Price', type: 'number' },
-                {
-                  field: 'total',
-                  headerName: 'Total',
-                  type: 'number',
-                  valueGetter: (value, row) => row.quantity * row.unitPrice,
-                },
-              ]}
+              columns={detailPanelColumns}
+              rows={detailPanelRows.filter(element => element.ItemID == selectedRow.id && selectedRow.row.ExplanationOfBenefitIdentifier == element.ExplanationOfBenefitIdentifier)}
               sx={{ flex: 1 }}
               hideFooter
             />
